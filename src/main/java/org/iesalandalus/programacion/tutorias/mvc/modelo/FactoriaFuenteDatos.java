@@ -4,7 +4,7 @@ import org.iesalandalus.programacion.tutorias.mvc.modelo.negocio.ficheros.Factor
 
 public enum FactoriaFuenteDatos {
 
-	MEMORIA {
+	FICHEROS {
 		public IFuenteDatos crear() {
 			return new FactoriaFuenteDatosFicheros();
 		}
