@@ -1,10 +1,19 @@
 package org.iesalandalus.programacion.tutorias.mvc.modelo.negocio.ficheros;
 
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 import javax.naming.OperationNotSupportedException;
+
 
 import org.iesalandalus.programacion.tutorias.mvc.modelo.dominio.Alumno;
 import org.iesalandalus.programacion.tutorias.mvc.modelo.negocio.IAlumnos;
@@ -85,6 +94,40 @@ public class Alumnos implements IAlumnos {
 		alumnosOrdenados.sort(Comparator.comparing(Alumno::getCorreo));
 
 		return alumnosOrdenados;
+	}
+	
+	public void comenzar() {
+		File fichero = new File("ficheros/alumnos.dat");
+		Alumno alumno;
+		try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(fichero))){
+			try {
+				while ((alumno = (Alumno) entrada.readObject()) != null) {
+					coleccionAlumnos.add(alumno);
+				}
+			} catch (ClassNotFoundException e) {
+				System.out.println("No puedo encontrar la clase que tengo que leer.");
+			} catch (IOException e) {
+				System.out.println("Error inesperado de Entrada/Salida.");
+			}
+		} catch (IOException e) {
+			System.out.println("No puedo abrir el fihero de entrada.");
+		}
+	}
+	
+	public void terminar() {
+		File fichero = new File("ficheros/personas.dat");
+	
+		try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(fichero))){
+			for (Alumno alumno: coleccionAlumnos) {
+				
+				salida.writeObject(new Alumno(alumno));
+			}
+			System.out.println("Fichero escrito satisfactoriamente");
+		} catch (FileNotFoundException e) {
+			System.out.println("No puedo crear el fichero de salida");
+		} catch (IOException e) {
+			System.out.println("Error inesperado de Entrada/Salida");
+		}
 	}
 
 }
