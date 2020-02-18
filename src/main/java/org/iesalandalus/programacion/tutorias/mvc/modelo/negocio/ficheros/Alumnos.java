@@ -115,7 +115,7 @@ public class Alumnos implements IAlumnos {
 	}
 	
 	public void terminar() {
-		File fichero = new File("ficheros/personas.dat");
+		File fichero = new File("ficheros/alumnos.dat");
 	
 		try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(fichero))){
 			for (Alumno alumno: coleccionAlumnos) {

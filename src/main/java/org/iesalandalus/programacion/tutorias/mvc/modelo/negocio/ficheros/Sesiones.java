@@ -1,11 +1,19 @@
 package org.iesalandalus.programacion.tutorias.mvc.modelo.negocio.ficheros;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 import javax.naming.OperationNotSupportedException;
 
+import org.iesalandalus.programacion.tutorias.mvc.modelo.dominio.Alumno;
 import org.iesalandalus.programacion.tutorias.mvc.modelo.dominio.Profesor;
 import org.iesalandalus.programacion.tutorias.mvc.modelo.dominio.Sesion;
 import org.iesalandalus.programacion.tutorias.mvc.modelo.dominio.Tutoria;
@@ -107,6 +115,40 @@ public class Sesiones implements ISesiones {
 		Comparator<Tutoria> comparadorTutorias= Comparator.comparing(Tutoria::getProfesor, comparadorProfesor).thenComparing(Tutoria::getNombre);
 		sesionesOrdenadas.sort(Comparator.comparing(Sesion::getTutoria,comparadorTutorias).thenComparing(Sesion::getFecha));
 		return sesionesOrdenadas;
+	}
+	
+	public void comenzar() {
+		File fichero = new File("ficheros/sesiones.dat");
+		Sesion sesion;
+		try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(fichero))){
+			try {
+				while ((sesion = (Sesion) entrada.readObject()) != null) {
+					coleccionSesiones.add(sesion);
+				}
+			} catch (ClassNotFoundException e) {
+				System.out.println("No puedo encontrar la clase que tengo que leer.");
+			} catch (IOException e) {
+				System.out.println("Error inesperado de Entrada/Salida.");
+			}
+		} catch (IOException e) {
+			System.out.println("No puedo abrir el fihero de entrada.");
+		}
+	}
+	
+	public void terminar() {
+		File fichero = new File("ficheros/sesiones.dat");
+	
+		try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(fichero))){
+			for (Sesion sesion: coleccionSesiones) {
+				
+				salida.writeObject(new Sesion(sesion));
+			}
+			System.out.println("Fichero escrito satisfactoriamente");
+		} catch (FileNotFoundException e) {
+			System.out.println("No puedo crear el fichero de salida");
+		} catch (IOException e) {
+			System.out.println("Error inesperado de Entrada/Salida");
+		}
 	}
 
 }
