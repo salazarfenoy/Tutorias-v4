@@ -1,5 +1,12 @@
 package org.iesalandalus.programacion.tutorias.mvc.modelo.negocio.ficheros;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -135,4 +142,37 @@ public class Citas implements ICitas {
 		return citasOrdenadas;
 	}
 
+	public void comenzar() {
+		File fichero = new File("ficheros/citas.dat");
+		Cita cita;
+		try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(fichero))){
+			try {
+				while ((cita = (Cita) entrada.readObject()) != null) {
+					coleccionCitas.add(cita);
+				}
+			} catch (ClassNotFoundException e) {
+				System.out.println("No puedo encontrar la clase que tengo que leer.");
+			} catch (IOException e) {
+				System.out.println("Error inesperado de Entrada/Salida.");
+			}
+		} catch (IOException e) {
+			System.out.println("No puedo abrir el fihero de entrada.");
+		}
+	}
+	
+	public void terminar() {
+		File fichero = new File("ficheros/citas.dat");
+	
+		try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(fichero))){
+			for (Cita cita: coleccionCitas) {
+				
+				salida.writeObject(new Cita(cita));
+			}
+			System.out.println("Fichero escrito satisfactoriamente");
+		} catch (FileNotFoundException e) {
+			System.out.println("No puedo crear el fichero de salida");
+		} catch (IOException e) {
+			System.out.println("Error inesperado de Entrada/Salida");
+		}
+	}
 }
