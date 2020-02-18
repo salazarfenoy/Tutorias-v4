@@ -1,4 +1,4 @@
-package org.iesalandalus.programacion.tutorias.mvc.modelo.negocio.memoria;
+package org.iesalandalus.programacion.tutorias.mvc.modelo.negocio.ficheros;
 
 import org.iesalandalus.programacion.tutorias.mvc.modelo.IFuenteDatos;
 import org.iesalandalus.programacion.tutorias.mvc.modelo.negocio.IAlumnos;
@@ -7,7 +7,7 @@ import org.iesalandalus.programacion.tutorias.mvc.modelo.negocio.IProfesores;
 import org.iesalandalus.programacion.tutorias.mvc.modelo.negocio.ISesiones;
 import org.iesalandalus.programacion.tutorias.mvc.modelo.negocio.ITutorias;
 
-public class FactoriaFuenteDatosMemoria implements IFuenteDatos {
+public class FactoriaFuenteDatosFicheros implements IFuenteDatos {
 
 
 	@Override
