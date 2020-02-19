@@ -23,5 +23,9 @@ public interface ICitas {
 	List<Cita> get(Alumno alumno);
 
 	List<Cita> get();
+	
+	void comenzar();
+
+	void terminar();
 
 }

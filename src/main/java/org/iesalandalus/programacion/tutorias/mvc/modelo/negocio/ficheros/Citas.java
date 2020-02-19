@@ -1,5 +1,6 @@
 package org.iesalandalus.programacion.tutorias.mvc.modelo.negocio.ficheros;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -150,6 +151,8 @@ public class Citas implements ICitas {
 				while ((cita = (Cita) entrada.readObject()) != null) {
 					coleccionCitas.add(cita);
 				}
+			} catch (EOFException eo) {
+				System.out.println("Fichero leído satisfactoriamente.");
 			} catch (ClassNotFoundException e) {
 				System.out.println("No puedo encontrar la clase que tengo que leer.");
 			} catch (IOException e) {

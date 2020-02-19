@@ -20,5 +20,9 @@ public interface ITutorias {
 	List<Tutoria> get(Profesor profesor);
 
 	List<Tutoria> get();
+	
+	void comenzar();
+
+	void terminar();
 
 }

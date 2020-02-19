@@ -18,4 +18,8 @@ public interface IAlumnos {
 
 	List<Alumno> get();
 
+	void comenzar();
+
+	void terminar();
+
 }

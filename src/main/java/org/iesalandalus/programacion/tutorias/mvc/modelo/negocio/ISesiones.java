@@ -20,5 +20,9 @@ public interface ISesiones {
 	List<Sesion> get(Tutoria tutoria);
 
 	List<Sesion> get();
+	
+	void comenzar();
+
+	void terminar();
 
 }

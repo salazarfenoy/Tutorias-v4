@@ -14,13 +14,14 @@ import java.util.List;
 
 import javax.naming.OperationNotSupportedException;
 
-
 import org.iesalandalus.programacion.tutorias.mvc.modelo.dominio.Alumno;
 import org.iesalandalus.programacion.tutorias.mvc.modelo.negocio.IAlumnos;
 
 public class Alumnos implements IAlumnos {
 
 	private List<Alumno> coleccionAlumnos;
+
+	private static final String NOMBRE_FICHERO_ALUMNOS = "ficheros/alumnos.dat";
 
 	public Alumnos() {
 
@@ -95,15 +96,17 @@ public class Alumnos implements IAlumnos {
 
 		return alumnosOrdenados;
 	}
-	
+
 	public void comenzar() {
-		File fichero = new File("ficheros/alumnos.dat");
+		File fichero = new File(NOMBRE_FICHERO_ALUMNOS);
 		Alumno alumno;
-		try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(fichero))){
+		try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(fichero))) {
 			try {
 				while ((alumno = (Alumno) entrada.readObject()) != null) {
 					coleccionAlumnos.add(alumno);
 				}
+			} catch (EOFException eo) {
+				System.out.println("Fichero leído satisfactoriamente.");
 			} catch (ClassNotFoundException e) {
 				System.out.println("No puedo encontrar la clase que tengo que leer.");
 			} catch (IOException e) {
@@ -113,13 +116,13 @@ public class Alumnos implements IAlumnos {
 			System.out.println("No puedo abrir el fihero de entrada.");
 		}
 	}
-	
+
 	public void terminar() {
-		File fichero = new File("ficheros/alumnos.dat");
-	
-		try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(fichero))){
-			for (Alumno alumno: coleccionAlumnos) {
-				
+		File fichero = new File(NOMBRE_FICHERO_ALUMNOS);
+
+		try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(fichero))) {
+			for (Alumno alumno : coleccionAlumnos) {
+
 				salida.writeObject(new Alumno(alumno));
 			}
 			System.out.println("Fichero escrito satisfactoriamente");
