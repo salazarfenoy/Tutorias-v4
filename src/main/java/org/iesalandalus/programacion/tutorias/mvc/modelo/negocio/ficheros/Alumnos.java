@@ -26,6 +26,7 @@ public class Alumnos implements IAlumnos {
 	public Alumnos() {
 
 		coleccionAlumnos = new ArrayList<>();
+
 	}
 
 	@Override
@@ -101,13 +102,20 @@ public class Alumnos implements IAlumnos {
 	public void comenzar() {
 		File fichero = new File(NOMBRE_FICHERO_ALUMNOS);
 		Alumno alumno;
+		int identificadorFichero = 0;
 		try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(fichero))) {
 			try {
 				while ((alumno = (Alumno) entrada.readObject()) != null) {
 					coleccionAlumnos.add(alumno);
+
+					String[] cadena = alumno.getExpediente().split("_");
+					if (Integer.parseInt(cadena[2]) > identificadorFichero) {
+						identificadorFichero = Integer.parseInt(cadena[2]);
+					}
+					Alumno.asignarIdentificadorFichero(identificadorFichero);
 				}
 			} catch (EOFException eo) {
-				System.out.println("Fichero leído satisfactoriamente.");
+				System.out.println("Fichero de alumnos leído satisfactoriamente.");
 			} catch (ClassNotFoundException e) {
 				System.out.println("No puedo encontrar la clase que tengo que leer.");
 			} catch (IOException e) {
@@ -127,7 +135,7 @@ public class Alumnos implements IAlumnos {
 
 				salida.writeObject(new Alumno(alumno));
 			}
-			System.out.println("Fichero escrito satisfactoriamente");
+			System.out.println("Fichero de alumnos escrito satisfactoriamente");
 		} catch (FileNotFoundException e) {
 			System.out.println("No puedo crear el fichero de salida");
 		} catch (IOException e) {

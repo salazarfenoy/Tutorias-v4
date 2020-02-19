@@ -127,10 +127,8 @@ public class Citas implements ICitas {
 		}
 
 		Comparator<Profesor> comparadorProfesor = Comparator.comparing(Profesor::getDni);
-		Comparator<Tutoria> comparadorTutoria = Comparator.comparing(Tutoria::getProfesor, comparadorProfesor)
-				.thenComparing(Tutoria::getNombre);
-		Comparator<Sesion> comparadorSesion = Comparator.comparing(Sesion::getTutoria, comparadorTutoria)
-				.thenComparing(Sesion::getFecha);
+		Comparator<Tutoria> comparadorTutoria = Comparator.comparing(Tutoria::getProfesor, comparadorProfesor).thenComparing(Tutoria::getNombre);
+		Comparator<Sesion> comparadorSesion = Comparator.comparing(Sesion::getTutoria, comparadorTutoria).thenComparing(Sesion::getFecha);
 		copiaCitasAlumno.sort(Comparator.comparing(Cita::getSesion, comparadorSesion).thenComparing(Cita::getHora));
 
 		return copiaCitasAlumno;
@@ -141,10 +139,8 @@ public class Citas implements ICitas {
 	public List<Cita> get() {
 		List<Cita> citasOrdenadas = copiaProfundaCitas();
 		Comparator<Profesor> comparadorProfesor = Comparator.comparing(Profesor::getDni);
-		Comparator<Tutoria> comparadorTutoria = Comparator.comparing(Tutoria::getProfesor, comparadorProfesor)
-				.thenComparing(Tutoria::getNombre);
-		Comparator<Sesion> comparadorSesion = Comparator.comparing(Sesion::getTutoria, comparadorTutoria)
-				.thenComparing(Sesion::getFecha);
+		Comparator<Tutoria> comparadorTutoria = Comparator.comparing(Tutoria::getProfesor, comparadorProfesor).thenComparing(Tutoria::getNombre);
+		Comparator<Sesion> comparadorSesion = Comparator.comparing(Sesion::getTutoria, comparadorTutoria).thenComparing(Sesion::getFecha);
 		citasOrdenadas.sort(Comparator.comparing(Cita::getSesion, comparadorSesion).thenComparing(Cita::getHora));
 		return citasOrdenadas;
 	}
@@ -159,7 +155,7 @@ public class Citas implements ICitas {
 					coleccionCitas.add(cita);
 				}
 			} catch (EOFException eo) {
-				System.out.println("Fichero leído satisfactoriamente.");
+				System.out.println("Fichero de citas leído satisfactoriamente.");
 			} catch (ClassNotFoundException e) {
 				System.out.println("No puedo encontrar la clase que tengo que leer.");
 			} catch (IOException e) {
@@ -179,7 +175,7 @@ public class Citas implements ICitas {
 
 				salida.writeObject(new Cita(cita));
 			}
-			System.out.println("Fichero escrito satisfactoriamente");
+			System.out.println("Fichero de citas escrito satisfactoriamente");
 		} catch (FileNotFoundException e) {
 			System.out.println("No puedo crear el fichero de salida");
 		} catch (IOException e) {

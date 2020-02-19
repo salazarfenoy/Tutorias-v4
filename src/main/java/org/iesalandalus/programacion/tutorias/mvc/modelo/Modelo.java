@@ -33,7 +33,7 @@ public class Modelo implements IModelo {
 		citas = fuenteDatos.crearCitas();
 
 	}
-	
+
 	@Override
 	public void comenzar() {
 		alumnos.comenzar();
@@ -42,7 +42,7 @@ public class Modelo implements IModelo {
 		sesiones.comenzar();
 		citas.comenzar();
 	}
-	
+
 	@Override
 	public void terminar() {
 		alumnos.terminar();

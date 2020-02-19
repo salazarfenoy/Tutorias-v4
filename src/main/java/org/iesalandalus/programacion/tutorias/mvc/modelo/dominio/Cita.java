@@ -74,8 +74,6 @@ public class Cita implements Serializable {
 		this.alumno = new Alumno(alumno);
 	}
 
-
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(alumno, hora, sesion);
@@ -97,8 +95,7 @@ public class Cita implements Serializable {
 	@Override
 	public String toString() {
 
-		return String.format("alumno=%s, sesion=%s, hora=%s", alumno.toString(), sesion.toString(),
-				getHora());
+		return String.format("alumno=%s, sesion=%s, hora=%s", alumno.toString(), sesion.toString(), getHora());
 	}
 
 }

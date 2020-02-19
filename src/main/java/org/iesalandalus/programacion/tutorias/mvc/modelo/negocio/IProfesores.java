@@ -17,7 +17,7 @@ public interface IProfesores {
 	void borrar(Profesor profesor) throws OperationNotSupportedException;
 
 	List<Profesor> get();
-	
+
 	void comenzar();
 
 	void terminar();

@@ -105,7 +105,7 @@ public class Profesores implements IProfesores {
 					coleccionProfesores.add(profesor);
 				}
 			} catch (EOFException eo) {
-				System.out.println("Fichero leído satisfactoriamente.");
+				System.out.println("Fichero de profesores leído satisfactoriamente.");
 			} catch (ClassNotFoundException e) {
 				System.out.println("No puedo encontrar la clase que tengo que leer.");
 			} catch (IOException e) {
@@ -125,7 +125,7 @@ public class Profesores implements IProfesores {
 
 				salida.writeObject(new Profesor(profesor));
 			}
-			System.out.println("Fichero escrito satisfactoriamente");
+			System.out.println("Fichero de profesores escrito satisfactoriamente");
 		} catch (FileNotFoundException e) {
 			System.out.println("No puedo crear el fichero de salida");
 		} catch (IOException e) {

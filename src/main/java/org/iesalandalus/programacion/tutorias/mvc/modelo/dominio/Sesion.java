@@ -135,8 +135,6 @@ public class Sesion implements Serializable {
 		this.tutoria = new Tutoria(tutoria);
 	}
 
-
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(fecha, tutoria);
@@ -157,8 +155,8 @@ public class Sesion implements Serializable {
 	@Override
 	public String toString() {
 
-		return String.format("tutoria=%s, fecha=%s, horaInicio=%s, horaFin=%s, minutosDuracion=%s",
-				getTutoria(), getFecha().format(FORMATO_FECHA), getHoraInicio(), getHoraFin(), getMinutosDuracion());
+		return String.format("tutoria=%s, fecha=%s, horaInicio=%s, horaFin=%s, minutosDuracion=%s", getTutoria(),
+				getFecha().format(FORMATO_FECHA), getHoraInicio(), getHoraFin(), getMinutosDuracion());
 	}
 
 }

@@ -116,8 +116,7 @@ public class Tutorias implements ITutorias {
 	public List<Tutoria> get() {
 		List<Tutoria> tutoriasOrdenadas = copiaProfundaTutorias();
 		Comparator<Profesor> comparadorProfesor = Comparator.comparing(Profesor::getDni);
-		tutoriasOrdenadas
-		.sort(Comparator.comparing(Tutoria::getProfesor, comparadorProfesor).thenComparing(Tutoria::getNombre));
+		tutoriasOrdenadas.sort(Comparator.comparing(Tutoria::getProfesor, comparadorProfesor).thenComparing(Tutoria::getNombre));
 		return tutoriasOrdenadas;
 	}
 
@@ -131,7 +130,7 @@ public class Tutorias implements ITutorias {
 					coleccionTutorias.add(tutoria);
 				}
 			} catch (EOFException eo) {
-				System.out.println("Fichero leído satisfactoriamente.");
+				System.out.println("Fichero de tutorías leído satisfactoriamente.");
 			} catch (ClassNotFoundException e) {
 				System.out.println("No puedo encontrar la clase que tengo que leer.");
 			} catch (IOException e) {
@@ -151,7 +150,7 @@ public class Tutorias implements ITutorias {
 
 				salida.writeObject(new Tutoria(tutoria));
 			}
-			System.out.println("Fichero escrito satisfactoriamente");
+			System.out.println("Fichero de tutorías escrito satisfactoriamente");
 		} catch (FileNotFoundException e) {
 			System.out.println("No puedo crear el fichero de salida");
 		} catch (IOException e) {

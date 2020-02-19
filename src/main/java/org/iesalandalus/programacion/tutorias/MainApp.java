@@ -15,6 +15,7 @@ public class MainApp {
 		IVista vista = FactoriaVista.TEXTO.crear();
 		IControlador controlador = new Controlador(modelo, vista);
 		controlador.comenzar();
+
 	}
 
 }

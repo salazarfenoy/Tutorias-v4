@@ -114,10 +114,8 @@ public class Sesiones implements ISesiones {
 	public List<Sesion> get() {
 		List<Sesion> sesionesOrdenadas = copiaProfundaSesiones();
 		Comparator<Profesor> comparadorProfesor = Comparator.comparing(Profesor::getDni);
-		Comparator<Tutoria> comparadorTutorias = Comparator.comparing(Tutoria::getProfesor, comparadorProfesor)
-				.thenComparing(Tutoria::getNombre);
-		sesionesOrdenadas
-		.sort(Comparator.comparing(Sesion::getTutoria, comparadorTutorias).thenComparing(Sesion::getFecha));
+		Comparator<Tutoria> comparadorTutorias = Comparator.comparing(Tutoria::getProfesor, comparadorProfesor).thenComparing(Tutoria::getNombre);
+		sesionesOrdenadas.sort(Comparator.comparing(Sesion::getTutoria, comparadorTutorias).thenComparing(Sesion::getFecha));
 		return sesionesOrdenadas;
 	}
 
@@ -131,7 +129,7 @@ public class Sesiones implements ISesiones {
 					coleccionSesiones.add(sesion);
 				}
 			} catch (EOFException eo) {
-				System.out.println("Fichero leído satisfactoriamente.");
+				System.out.println("Fichero de sesiones leído satisfactoriamente.");
 			} catch (ClassNotFoundException e) {
 				System.out.println("No puedo encontrar la clase que tengo que leer.");
 			} catch (IOException e) {
@@ -151,7 +149,7 @@ public class Sesiones implements ISesiones {
 
 				salida.writeObject(new Sesion(sesion));
 			}
-			System.out.println("Fichero escrito satisfactoriamente");
+			System.out.println("Fichero de sesiones escrito satisfactoriamente");
 		} catch (FileNotFoundException e) {
 			System.out.println("No puedo crear el fichero de salida");
 		} catch (IOException e) {

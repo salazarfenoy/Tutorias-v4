@@ -125,8 +125,6 @@ public class Profesor implements Serializable {
 
 	}
 
-
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(dni);
@@ -160,8 +158,7 @@ public class Profesor implements Serializable {
 	@Override
 	public String toString() {
 
-		return String.format("nombre=%s (%s), DNI=%s, correo=%s", getNombre(), getIniciales(), getDni(),
-				getCorreo());
+		return String.format("nombre=%s (%s), DNI=%s, correo=%s", getNombre(), getIniciales(), getDni(), getCorreo());
 	}
 
 }

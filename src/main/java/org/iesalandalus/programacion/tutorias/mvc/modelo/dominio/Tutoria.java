@@ -48,8 +48,6 @@ public class Tutoria implements Serializable {
 		this.profesor = profesor;
 	}
 
-
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(nombre, profesor);

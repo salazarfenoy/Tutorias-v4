@@ -9,7 +9,7 @@ public class Alumno implements Serializable {
 	private static final String ER_CORREO = "([\\w\\.]+[^.])@[\\w^\\_]+\\.[a-z]{2,3}";
 	private static int ultimoIdentificador;
 	private String nombre;
-	private String correo; 
+	private String correo;
 	private String expediente;
 
 	public Alumno(String nombre, String correo) {
@@ -86,7 +86,6 @@ public class Alumno implements Serializable {
 	}
 
 	private void setExpediente() {
-
 		incrementaUltimoIdentificador();
 		StringBuilder expedienteAsignado = new StringBuilder(PREFIJO_EXPEDIENTE);
 		expedienteAsignado.append(getIniciales() + "_");
@@ -95,7 +94,12 @@ public class Alumno implements Serializable {
 		this.expediente = expedienteAsignado.toString();
 	}
 
+	public static void asignarIdentificadorFichero(int identificadorFichero) {
+		ultimoIdentificador = identificadorFichero;
+	}
+
 	private static void incrementaUltimoIdentificador() {
+
 		++ultimoIdentificador;
 	}
 
@@ -105,17 +109,12 @@ public class Alumno implements Serializable {
 		String[] palabras = getNombre().split(" ");
 		for (int i = 0; i <= palabras.length - 1; i++) {
 
-
 			iniciales.append(palabras[i].charAt(0));
 		}
 
 		return iniciales.toString().toUpperCase();
 
 	}
-
-
-
-
 
 	@Override
 	public int hashCode() {
@@ -137,8 +136,8 @@ public class Alumno implements Serializable {
 	@Override
 	public String toString() {
 
-		return String.format("nombre=%s (%s), correo=%s, expediente=%s", getNombre(), getIniciales(),
-				getCorreo(), getExpediente());
+		return String.format("nombre=%s (%s), correo=%s, expediente=%s", getNombre(), getIniciales(), getCorreo(),
+				getExpediente());
 	}
 
 }
