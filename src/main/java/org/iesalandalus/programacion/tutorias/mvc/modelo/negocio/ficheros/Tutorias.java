@@ -22,6 +22,8 @@ public class Tutorias implements ITutorias {
 
 	private List<Tutoria> coleccionTutorias;
 
+	private static final String NOMBRE_FICHERO_TUTORIAS = "ficheros/tutorias.dat";
+
 	public Tutorias() {
 
 		coleccionTutorias = new ArrayList<>();
@@ -114,14 +116,16 @@ public class Tutorias implements ITutorias {
 	public List<Tutoria> get() {
 		List<Tutoria> tutoriasOrdenadas = copiaProfundaTutorias();
 		Comparator<Profesor> comparadorProfesor = Comparator.comparing(Profesor::getDni);
-		tutoriasOrdenadas.sort(Comparator.comparing(Tutoria::getProfesor, comparadorProfesor).thenComparing(Tutoria::getNombre));
+		tutoriasOrdenadas
+		.sort(Comparator.comparing(Tutoria::getProfesor, comparadorProfesor).thenComparing(Tutoria::getNombre));
 		return tutoriasOrdenadas;
 	}
-	
+
+	@Override
 	public void comenzar() {
-		File fichero = new File("ficheros/tutorias.dat");
+		File fichero = new File(NOMBRE_FICHERO_TUTORIAS);
 		Tutoria tutoria;
-		try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(fichero))){
+		try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(fichero))) {
 			try {
 				while ((tutoria = (Tutoria) entrada.readObject()) != null) {
 					coleccionTutorias.add(tutoria);
@@ -137,13 +141,14 @@ public class Tutorias implements ITutorias {
 			System.out.println("No puedo abrir el fihero de entrada.");
 		}
 	}
-	
+
+	@Override
 	public void terminar() {
-		File fichero = new File("ficheros/tutorias.dat");
-	
-		try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(fichero))){
-			for (Tutoria tutoria: coleccionTutorias) {
-				
+		File fichero = new File(NOMBRE_FICHERO_TUTORIAS);
+
+		try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(fichero))) {
+			for (Tutoria tutoria : coleccionTutorias) {
+
 				salida.writeObject(new Tutoria(tutoria));
 			}
 			System.out.println("Fichero escrito satisfactoriamente");

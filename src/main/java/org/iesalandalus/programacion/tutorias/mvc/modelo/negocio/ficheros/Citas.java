@@ -25,6 +25,8 @@ public class Citas implements ICitas {
 
 	private List<Cita> coleccionCitas;
 
+	private static final String NOMBRE_FICHERO_CITAS = "ficheros/citas.dat";
+
 	public Citas() {
 
 		coleccionCitas = new ArrayList<>();
@@ -125,8 +127,10 @@ public class Citas implements ICitas {
 		}
 
 		Comparator<Profesor> comparadorProfesor = Comparator.comparing(Profesor::getDni);
-		Comparator<Tutoria> comparadorTutoria = Comparator.comparing(Tutoria::getProfesor, comparadorProfesor).thenComparing(Tutoria::getNombre);
-		Comparator<Sesion> comparadorSesion = Comparator.comparing(Sesion::getTutoria,comparadorTutoria).thenComparing(Sesion::getFecha);
+		Comparator<Tutoria> comparadorTutoria = Comparator.comparing(Tutoria::getProfesor, comparadorProfesor)
+				.thenComparing(Tutoria::getNombre);
+		Comparator<Sesion> comparadorSesion = Comparator.comparing(Sesion::getTutoria, comparadorTutoria)
+				.thenComparing(Sesion::getFecha);
 		copiaCitasAlumno.sort(Comparator.comparing(Cita::getSesion, comparadorSesion).thenComparing(Cita::getHora));
 
 		return copiaCitasAlumno;
@@ -137,16 +141,19 @@ public class Citas implements ICitas {
 	public List<Cita> get() {
 		List<Cita> citasOrdenadas = copiaProfundaCitas();
 		Comparator<Profesor> comparadorProfesor = Comparator.comparing(Profesor::getDni);
-		Comparator<Tutoria> comparadorTutoria = Comparator.comparing(Tutoria::getProfesor, comparadorProfesor).thenComparing(Tutoria::getNombre);
-		Comparator<Sesion> comparadorSesion = Comparator.comparing(Sesion::getTutoria,comparadorTutoria).thenComparing(Sesion::getFecha);
+		Comparator<Tutoria> comparadorTutoria = Comparator.comparing(Tutoria::getProfesor, comparadorProfesor)
+				.thenComparing(Tutoria::getNombre);
+		Comparator<Sesion> comparadorSesion = Comparator.comparing(Sesion::getTutoria, comparadorTutoria)
+				.thenComparing(Sesion::getFecha);
 		citasOrdenadas.sort(Comparator.comparing(Cita::getSesion, comparadorSesion).thenComparing(Cita::getHora));
 		return citasOrdenadas;
 	}
 
+	@Override
 	public void comenzar() {
-		File fichero = new File("ficheros/citas.dat");
+		File fichero = new File(NOMBRE_FICHERO_CITAS);
 		Cita cita;
-		try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(fichero))){
+		try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(fichero))) {
 			try {
 				while ((cita = (Cita) entrada.readObject()) != null) {
 					coleccionCitas.add(cita);
@@ -162,13 +169,14 @@ public class Citas implements ICitas {
 			System.out.println("No puedo abrir el fihero de entrada.");
 		}
 	}
-	
+
+	@Override
 	public void terminar() {
-		File fichero = new File("ficheros/citas.dat");
-	
-		try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(fichero))){
-			for (Cita cita: coleccionCitas) {
-				
+		File fichero = new File(NOMBRE_FICHERO_CITAS);
+
+		try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(fichero))) {
+			for (Cita cita : coleccionCitas) {
+
 				salida.writeObject(new Cita(cita));
 			}
 			System.out.println("Fichero escrito satisfactoriamente");

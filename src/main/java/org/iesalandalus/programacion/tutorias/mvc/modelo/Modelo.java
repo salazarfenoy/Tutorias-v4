@@ -33,6 +33,24 @@ public class Modelo implements IModelo {
 		citas = fuenteDatos.crearCitas();
 
 	}
+	
+	@Override
+	public void comenzar() {
+		alumnos.comenzar();
+		profesores.comenzar();
+		tutorias.comenzar();
+		sesiones.comenzar();
+		citas.comenzar();
+	}
+	
+	@Override
+	public void terminar() {
+		alumnos.terminar();
+		profesores.terminar();
+		tutorias.terminar();
+		sesiones.terminar();
+		citas.terminar();
+	}
 
 	@Override
 	public void insertar(Alumno alumno) throws OperationNotSupportedException {

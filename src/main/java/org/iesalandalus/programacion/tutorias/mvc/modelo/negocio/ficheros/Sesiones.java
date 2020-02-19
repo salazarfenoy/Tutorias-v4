@@ -23,6 +23,8 @@ public class Sesiones implements ISesiones {
 
 	private List<Sesion> coleccionSesiones;
 
+	private static final String NOMBRE_FICHERO_SESIONES = "ficheros/sesiones.dat";
+
 	public Sesiones() {
 
 		coleccionSesiones = new ArrayList<>();
@@ -112,15 +114,18 @@ public class Sesiones implements ISesiones {
 	public List<Sesion> get() {
 		List<Sesion> sesionesOrdenadas = copiaProfundaSesiones();
 		Comparator<Profesor> comparadorProfesor = Comparator.comparing(Profesor::getDni);
-		Comparator<Tutoria> comparadorTutorias= Comparator.comparing(Tutoria::getProfesor, comparadorProfesor).thenComparing(Tutoria::getNombre);
-		sesionesOrdenadas.sort(Comparator.comparing(Sesion::getTutoria,comparadorTutorias).thenComparing(Sesion::getFecha));
+		Comparator<Tutoria> comparadorTutorias = Comparator.comparing(Tutoria::getProfesor, comparadorProfesor)
+				.thenComparing(Tutoria::getNombre);
+		sesionesOrdenadas
+		.sort(Comparator.comparing(Sesion::getTutoria, comparadorTutorias).thenComparing(Sesion::getFecha));
 		return sesionesOrdenadas;
 	}
-	
+
+	@Override
 	public void comenzar() {
-		File fichero = new File("ficheros/sesiones.dat");
+		File fichero = new File(NOMBRE_FICHERO_SESIONES);
 		Sesion sesion;
-		try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(fichero))){
+		try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(fichero))) {
 			try {
 				while ((sesion = (Sesion) entrada.readObject()) != null) {
 					coleccionSesiones.add(sesion);
@@ -136,13 +141,14 @@ public class Sesiones implements ISesiones {
 			System.out.println("No puedo abrir el fihero de entrada.");
 		}
 	}
-	
+
+	@Override
 	public void terminar() {
-		File fichero = new File("ficheros/sesiones.dat");
-	
-		try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(fichero))){
-			for (Sesion sesion: coleccionSesiones) {
-				
+		File fichero = new File(NOMBRE_FICHERO_SESIONES);
+
+		try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(fichero))) {
+			for (Sesion sesion : coleccionSesiones) {
+
 				salida.writeObject(new Sesion(sesion));
 			}
 			System.out.println("Fichero escrito satisfactoriamente");

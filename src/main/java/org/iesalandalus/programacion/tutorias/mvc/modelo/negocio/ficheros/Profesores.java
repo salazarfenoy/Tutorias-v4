@@ -21,6 +21,8 @@ public class Profesores implements IProfesores {
 
 	private List<Profesor> coleccionProfesores;
 
+	private static final String NOMBRE_FICHERO_PROFESORES = "ficheros/profesores.dat";
+
 	public Profesores() {
 
 		coleccionProfesores = new ArrayList<>();
@@ -92,11 +94,12 @@ public class Profesores implements IProfesores {
 		profesoresOrdenados.sort(Comparator.comparing(Profesor::getDni));
 		return profesoresOrdenados;
 	}
-	
+
+	@Override
 	public void comenzar() {
-		File fichero = new File("ficheros/profesores.dat");
+		File fichero = new File(NOMBRE_FICHERO_PROFESORES);
 		Profesor profesor;
-		try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(fichero))){
+		try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(fichero))) {
 			try {
 				while ((profesor = (Profesor) entrada.readObject()) != null) {
 					coleccionProfesores.add(profesor);
@@ -112,13 +115,14 @@ public class Profesores implements IProfesores {
 			System.out.println("No puedo abrir el fihero de entrada.");
 		}
 	}
-	
+
+	@Override
 	public void terminar() {
-		File fichero = new File("ficheros/profesores.dat");
-	
-		try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(fichero))){
-			for (Profesor profesor: coleccionProfesores) {
-				
+		File fichero = new File(NOMBRE_FICHERO_PROFESORES);
+
+		try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(fichero))) {
+			for (Profesor profesor : coleccionProfesores) {
+
 				salida.writeObject(new Profesor(profesor));
 			}
 			System.out.println("Fichero escrito satisfactoriamente");
