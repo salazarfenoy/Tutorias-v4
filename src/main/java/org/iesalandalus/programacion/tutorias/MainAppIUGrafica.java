@@ -26,16 +26,16 @@ public class MainAppIUGrafica extends Application {
 	    });
 	}
 	
+	
 	@Override
 	public void start(Stage escenarioPrincipal) {
 		try {
-			BorderPane raiz = FXMLLoader.load(getClass().getResource("mvc/vista/grafica/vista/VentanaPrincipal.fxml"));
+			BorderPane raiz = FXMLLoader.load(getClass().getResource("mvc/vista/grafica/VentanaPrincipal.fxml"));
 			Scene escena = new Scene(raiz);
 			escenarioPrincipal.setScene(escena);
 			escenarioPrincipal.initStyle(StageStyle.UNDECORATED);
-			addDragListeners(raiz, escenarioPrincipal);
+			addDragListeners(raiz,escenarioPrincipal);
 			escenarioPrincipal.show();
-			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -44,5 +44,6 @@ public class MainAppIUGrafica extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
+
 	
 }

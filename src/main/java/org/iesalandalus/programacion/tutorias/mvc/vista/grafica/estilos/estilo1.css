@@ -1,2 +1,30 @@
-@charset "ISO-8859-1";
+/*
+ * 
+ * Panel Izquierda
+ * 
+ */
+ 
+.panelMenuIzquierda{
+	-fx-background-color:linear-gradient(from 90% 25% to 100% 100%, #042c66, #044678);
+	
+}
+
+.botonMenu{
+	-fx-background-color:transparent;
+	-fx-text-fill:white;
+	-fx-font-size:16px;
+	-fx-padding: 0 0 0 50;
+	-fx-font-family:"Cambria"
+}
+
+.botonMenu:hover{
+	-fx-background-color:#044689;
+	-fx-opacity:0.8;
+}
+
+
+
+
+
+
 
