@@ -112,9 +112,9 @@ public class Alumnos implements IAlumnos {
 					if (Integer.parseInt(cadena[2]) > identificadorFichero) {
 						identificadorFichero = Integer.parseInt(cadena[2]);
 					}
-					Alumno.asignarIdentificadorFichero(identificadorFichero);
 				}
 			} catch (EOFException eo) {
+				Alumno.asignarIdentificadorFichero(identificadorFichero);
 				System.out.println("Fichero de alumnos leído satisfactoriamente.");
 			} catch (ClassNotFoundException e) {
 				System.out.println("No puedo encontrar la clase que tengo que leer.");
