@@ -9,7 +9,7 @@
 	
 }
 
-.botonMenu{
+#botonMenu{
 	-fx-background-color:transparent;
 	-fx-text-fill:white;
 	-fx-font-size:16px;
@@ -17,9 +17,41 @@
 	-fx-font-family:"Cambria"
 }
 
-.botonMenu:hover{
+#botonMenu:hover{
 	-fx-background-color:#044689;
 	-fx-opacity:0.8;
+}
+
+
+#botonPulsado{
+	-fx-background-color:#002952;
+	-fx-text-fill:white;
+	-fx-font-size:16px;
+	-fx-padding: 0 0 0 50;
+	-fx-font-family:"Cambria"
+}
+
+
+
+
+.salir{
+	-fx-background-color:#1da0b8;
+	-fx-opacity:0.8;
+	-fx-pref-width:400;
+	-fx-pref-height:200;
+	-fx-background-radius:20;
+	-fx-font-size:20px;
+	-fx-graphic:none;
+-fx-border-color:#042c66;
+-fx-border-radius:20;
+-fx-border-width:2px;
+-fx-text-alignment:center
+	
+}
+
+.salir .content{
+	-fx-fill-text:white;
+	-fx-text-alignment:center
 }
 
 

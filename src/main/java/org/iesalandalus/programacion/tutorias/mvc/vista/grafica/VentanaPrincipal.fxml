@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
@@ -9,7 +10,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: white;" stylesheets="@estilos/estilo1.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.iesalandalus.programacion.tutorias.mvc.vista.grafica.ControladorPrincipal">
+<BorderPane fx:id="panelRaiz" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1600.0" style="-fx-background-color: white;" styleClass="panelRaiz" stylesheets="@estilos/estilo1.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.iesalandalus.programacion.tutorias.mvc.vista.grafica.ControladorPrincipal">
    <left>
       <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="350.0" styleClass="panelMenuIzquierda" BorderPane.alignment="CENTER">
          <children>
@@ -17,7 +18,7 @@
                <children>
                   <Text fill="WHITE" opacity="0.5" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textoTitulo" text="I E S" wrappingWidth="73.6083984375">
                      <font>
-                        <Font name="Cambria Math" size="27.0" />
+                        <Font name="Cambria Bold" size="27.0" />
                      </font>
                      <VBox.margin>
                         <Insets left="12.0" />
@@ -25,7 +26,7 @@
                   </Text>
                   <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="AL-ÁNDALUS" wrappingWidth="219.583984375">
                      <font>
-                        <Font name="Cambria" size="36.0" />
+                        <Font name="Cambria Bold" size="36.0" />
                      </font>
                      <VBox.margin>
                         <Insets top="-10.0" />
@@ -47,7 +48,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button fx:id="botonAlumnado" alignment="BASELINE_LEFT" graphicTextGap="40.0" mnemonicParsing="false" prefHeight="95.0" prefWidth="350.0" styleClass="botonMenu" text="Alumnado">
+                  <Button id="botonMenu" fx:id="botonAlumnado" alignment="BASELINE_LEFT" graphicTextGap="40.0" mnemonicParsing="false" onAction="#elegirBotonMenu" prefHeight="95.0" prefWidth="350.0" styleClass="botonMenu" text="Alumnado">
                      <graphic>
                         <ImageView fitHeight="29.0" fitWidth="29.0">
                            <image>
@@ -55,7 +56,7 @@
                            </image>
                         </ImageView>
                      </graphic></Button>
-                  <Button fx:id="botonProfesorado" alignment="BASELINE_LEFT" graphicTextGap="40.0" mnemonicParsing="false" prefHeight="73.0" prefWidth="350.0" styleClass="botonMenu" text="Profesorado" GridPane.rowIndex="1">
+                  <Button id="botonMenu" fx:id="botonProfesorado" alignment="BASELINE_LEFT" graphicTextGap="40.0" mnemonicParsing="false" onAction="#elegirBotonMenu" prefHeight="95.0" prefWidth="350.0" styleClass="botonMenu" text="Profesorado" GridPane.rowIndex="1">
                      <graphic>
                         <ImageView fitHeight="29.0" fitWidth="29.0">
                            <image>
@@ -63,7 +64,7 @@
                            </image>
                         </ImageView>
                      </graphic></Button>
-                  <Button fx:id="botonTutorias" alignment="BASELINE_LEFT" graphicTextGap="40.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="350.0" styleClass="botonMenu" text="Tutorías" GridPane.rowIndex="2">
+                  <Button id="botonMenu" fx:id="botonTutorias" alignment="BASELINE_LEFT" graphicTextGap="40.0" mnemonicParsing="false" onAction="#elegirBotonMenu" prefHeight="95.0" prefWidth="350.0" styleClass="botonMenu" text="Tutorías" GridPane.rowIndex="2">
                      <graphic>
                         <ImageView fitHeight="29.0" fitWidth="29.0">
                            <image>
@@ -71,7 +72,7 @@
                            </image>
                         </ImageView>
                      </graphic></Button>
-                  <Button fx:id="botonSesiones" alignment="BASELINE_LEFT" graphicTextGap="40.0" mnemonicParsing="false" prefHeight="59.0" prefWidth="350.0" styleClass="botonMenu" text="Sesiones" GridPane.rowIndex="3">
+                  <Button id="botonMenu" fx:id="botonSesiones" alignment="BASELINE_LEFT" graphicTextGap="40.0" mnemonicParsing="false" onAction="#elegirBotonMenu" prefHeight="95.0" prefWidth="350.0" styleClass="botonMenu" text="Sesiones" GridPane.rowIndex="3">
                      <graphic>
                         <ImageView fitHeight="29.0" fitWidth="29.0">
                            <image>
@@ -79,7 +80,7 @@
                            </image>
                         </ImageView>
                      </graphic></Button>
-                  <Button fx:id="botonCitas" alignment="BASELINE_LEFT" graphicTextGap="40.0" mnemonicParsing="false" prefHeight="87.0" prefWidth="350.0" styleClass="botonMenu" text="Citas" GridPane.rowIndex="4">
+                  <Button id="botonMenu" fx:id="botonCitas" alignment="BASELINE_LEFT" graphicTextGap="40.0" mnemonicParsing="false" onAction="#elegirBotonMenu" prefHeight="87.0" prefWidth="350.0" styleClass="botonMenu" text="Citas" GridPane.rowIndex="4">
                      <graphic>
                         <ImageView fitHeight="29.0" fitWidth="29.0">
                            <image>
@@ -87,7 +88,7 @@
                            </image>
                         </ImageView>
                      </graphic></Button>
-                  <Button fx:id="botonAcercaDe" alignment="BASELINE_LEFT" graphicTextGap="40.0" mnemonicParsing="false" prefHeight="105.0" prefWidth="350.0" styleClass="botonMenu" text="Acerca de..." GridPane.rowIndex="5">
+                  <Button id="botonMenu" fx:id="botonAcercaDe" alignment="BASELINE_LEFT" graphicTextGap="40.0" mnemonicParsing="false" onAction="#elegirBotonMenu" prefHeight="105.0" prefWidth="350.0" styleClass="botonMenu" text="Acerca de..." GridPane.rowIndex="5">
                      <graphic>
                         <ImageView fitHeight="29.0" fitWidth="29.0">
                            <image>
@@ -100,7 +101,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </GridPane>
-            <Button fx:id="botonSalir" alignment="BASELINE_LEFT" graphicTextGap="40.0" layoutY="616.0" mnemonicParsing="false" prefHeight="85.0" prefWidth="350.0" styleClass="botonMenu" text="Salir">
+            <Button id="botonMenu" fx:id="botonSalir" alignment="BASELINE_LEFT" graphicTextGap="40.0" layoutY="616.0" mnemonicParsing="false" onAction="#salir" prefHeight="85.0" prefWidth="350.0" styleClass="botonMenu" text="Salir">
                <graphic>
                   <ImageView fitHeight="29.0" fitWidth="29.0">
                      <image>
@@ -116,14 +117,14 @@
       </AnchorPane>
    </left>
    <center>
-      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="698.0" prefWidth="1247.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
          <top>
-            <AnchorPane prefHeight="104.0" prefWidth="850.0" BorderPane.alignment="CENTER">
+            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="91.0" prefWidth="1243.0" BorderPane.alignment="CENTER">
                <children>
-                  <HBox layoutX="21.0" layoutY="76.0" prefHeight="3.0" prefWidth="808.0" style="-fx-background-color: #042c66; -fx-background-radius: 30;" />
-                  <HBox layoutX="61.0" layoutY="32.0" prefHeight="28.0" prefWidth="206.0">
+                  <HBox layoutX="19.0" layoutY="75.0" prefHeight="3.0" prefWidth="1206.0" style="-fx-background-color: #1da0b8; -fx-background-radius: 30;" />
+                  <HBox layoutX="74.0" layoutY="37.0" prefHeight="28.0" prefWidth="206.0">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="G e s t i ó n">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="g e s t i ó n">
                            <font>
                               <Font name="Cambria" size="16.0" />
                            </font>
@@ -152,6 +153,29 @@
                </children>
             </AnchorPane>
          </top>
+         <center>
+            <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="597.0" prefWidth="1240.0" BorderPane.alignment="CENTER">
+               <children>
+                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="592.0" prefWidth="1235.0" style="-fx-background-color: white;">
+                     <children>
+                        <Text fill="#868686" layoutX="416.0" layoutY="141.0" opacity="0.3" strokeType="OUTSIDE" strokeWidth="0.0" text="Bienvenido/a">
+                           <font>
+                              <Font name="Franklin Gothic Medium" size="75.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="382.0" layoutY="250.0" lineSpacing="12.0" opacity="0.73" strokeType="OUTSIDE" strokeWidth="0.0" text="Este es el software para gestionar las tutorías del IES Al-Ándalus de Almería. En el menú de la izquierda tienes las distintas opciones a las que puedes acceder y en las que podrás desde registrarte como alumno o profesor, hasta pedir una cita para una tutoría de tu asignatura o módulo." textAlignment="JUSTIFY" wrappingWidth="499.154296875">
+                           <font>
+                              <Font name="Cambria Italic" size="20.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </StackPane>
+         </center>
       </BorderPane>
    </center>
+   <effect>
+      <InnerShadow color="#8d8a8a" height="3.2" radius="3.2649999999999997" width="11.86" />
+   </effect>
 </BorderPane>
