@@ -34,6 +34,12 @@
 
 
 
+/*
+ * 
+ * Alertas, dialogos
+ * 
+ */
+
 .salir{
 	-fx-background-color:#1da0b8;
 	-fx-opacity:0.8;
@@ -53,6 +59,47 @@
 	-fx-fill-text:white;
 	-fx-text-alignment:center
 }
+
+
+
+/*
+ * 
+ * Contenido
+ * 
+ */
+
+.textoPlano{
+	-fx-border-color: grey;
+  -fx-border-width: 0 0 1 0; 
+  -fx-background-color: transparent;
+ 
+}
+
+
+.botonComunRegistrar{
+	
+	
+-fx-background-color:linear-gradient(to bottom, #065EB7, #6EA7E1)
+	
+}
+
+.botonComunRegistrar:hover{
+	
+	-fx-background-color:linear-gradient(to top, #065EB7, #6EA7E1)
+}
+
+.botonComunBorrar{
+	
+	-fx-background-color:linear-gradient(to bottom, #E84B4B, #F18787)
+	
+}
+
+.botonComunBorrar:hover{
+	
+	-fx-background-color:linear-gradient(to top, #E84B4B, #F18787)
+	
+}
+
 
 
 

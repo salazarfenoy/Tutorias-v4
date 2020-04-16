@@ -4,6 +4,16 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import org.iesalandalus.programacion.tutorias.mvc.controlador.IControlador;
+import org.iesalandalus.programacion.tutorias.mvc.modelo.dominio.Alumno;
+import org.iesalandalus.programacion.tutorias.mvc.modelo.negocio.ficheros.Alumnos;
+
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,15 +21,27 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class ControladorPrincipal implements Initializable {
 
+	@FXML private TableView<Alumno> tvAlumnado;
+
+	@FXML private TableColumn<Alumno, String> tcNombre;
+	@FXML private TableColumn<Alumno, String> tcCorreo;
+	@FXML private TableColumn<Alumno, String> tcExpediente;
+	
+	
 	@FXML private Button botonSalir, botonAlumnado, botonProfesorado, botonTutorias, botonSesiones, botonCitas, botonAcercaDe;
 	@FXML private BorderPane panelRaiz;
+	@FXML private AnchorPane panelAlumnado;
 	
 	
 	
@@ -43,6 +65,7 @@ public class ControladorPrincipal implements Initializable {
 		if(botonPulsado == botonAlumnado) {
 			botonAlumnado.setId("botonPulsado");
 			cambiarEstilo(botonAlumnado);
+			panelAlumnado.toFront();
 		}
 		
 		if(botonPulsado == botonProfesorado) {
@@ -94,11 +117,25 @@ public class ControladorPrincipal implements Initializable {
 	}
 	
 	
+	private IControlador controladorMVC;
+
 	
+	
+	private ObservableList<Alumno> alumnos = FXCollections.observableArrayList();
+	private FilteredList<Alumno> alumnosFiltrados = new FilteredList<>(alumnos, p -> true);
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
+	
+		tcNombre.setCellValueFactory(alumno -> new SimpleStringProperty(alumno.getValue().getNombre()));
+		tcCorreo.setCellValueFactory(alumno -> new SimpleStringProperty(alumno.getValue().getCorreo()));
+		tcExpediente.setCellValueFactory(alumno -> new SimpleStringProperty(alumno.getValue().getExpediente()));
+		
+		
+		SortedList<Alumno> alumnosOrdenados = new SortedList<>(alumnosFiltrados);
+		alumnosOrdenados.comparatorProperty().bind(tvAlumnado.comparatorProperty());
+		tvAlumnado.setItems(alumnosOrdenados);
+		
 		
 	}
 	
