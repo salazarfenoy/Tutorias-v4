@@ -26,7 +26,7 @@ public class ControladorPrincipal implements Initializable {
 	
 	
 	private void cambiarEstilo(Button botonElegido) {
-		Button[] botones = {botonAlumnado,botonProfesorado,botonTutorias,botonSesiones,botonCitas};
+		Button[] botones = {botonAlumnado,botonProfesorado,botonTutorias,botonSesiones,botonCitas,botonAcercaDe};
 	
 		for(Button boton: botones) {
 			if(boton!=botonElegido) {
@@ -63,6 +63,11 @@ public class ControladorPrincipal implements Initializable {
 		if(botonPulsado == botonCitas) {
 			botonCitas.setId("botonPulsado");
 			cambiarEstilo(botonCitas);
+		}
+		
+		if(botonPulsado == botonAcercaDe) {
+			botonAcercaDe.setId("botonPulsado");
+			cambiarEstilo(botonAcercaDe);
 		}
 	}
 	
