@@ -8,6 +8,7 @@ import javax.naming.OperationNotSupportedException;
 import org.iesalandalus.programacion.tutorias.mvc.controlador.IControlador;
 import org.iesalandalus.programacion.tutorias.mvc.modelo.dominio.Alumno;
 import org.iesalandalus.programacion.tutorias.mvc.modelo.dominio.Profesor;
+import org.iesalandalus.programacion.tutorias.mvc.modelo.dominio.Tutoria;
 import org.iesalandalus.programacion.utilidades.Dialogos;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -23,6 +24,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -59,11 +62,17 @@ public class ControladorPrincipal implements Initializable {
 	
 	private ObservableList<Profesor> profesores = FXCollections.observableArrayList();
 	private FilteredList<Profesor> profesoresFiltrados = new FilteredList<>(profesores, p -> true);
+	
+	private ObservableList<Tutoria> tutorias = FXCollections.observableArrayList();
+	private FilteredList<Tutoria> tutoriasFiltradas = new FilteredList<>(tutorias, p -> true);
+
 
 	@FXML
 	private TableView<Alumno> tvAlumnado;
 	@FXML
 	private TableView<Profesor> tvProfesorado;
+	@FXML
+	private TableView<Tutoria> tvTutorias;
 
 	@FXML
 	private TableColumn<Alumno, String> tcNombre;
@@ -78,6 +87,12 @@ public class ControladorPrincipal implements Initializable {
 	private TableColumn<Profesor, String> tcCorreoP;
 	@FXML
 	private TableColumn<Profesor, String> tcDni;
+	
+	@FXML
+	private TableColumn<Tutoria, String> tcProfesorT;
+	@FXML
+	private TableColumn<Tutoria, String> tcNombreTutoria;
+	
 
 	// TextFields
 	@FXML
@@ -88,18 +103,24 @@ public class ControladorPrincipal implements Initializable {
 	private TextField buscarAlumno;
 	@FXML 
 	private TextField buscarProfesor;
+	@FXML
+	private TextField buscarTutoria;
 @FXML
 private TextField tfNombreProfesor;
 @FXML
 private TextField tfDni;
 @FXML
 private TextField tfCorreoProfesor;
+@FXML 
+private TextField tfNombreTutoria;
+@FXML
+private ComboBox<Profesor> cajaProfesorTutoria;
 	// Botones y Paneles
 	@FXML
-	private ImageView botonVolverAlumnado;
+	private ImageView botonVolverAlumnado, botonVolverProfesorado, botonVolverTutorias;
 	@FXML
 	private Button botonSalir, botonAlumnado, botonProfesorado, botonTutorias, botonSesiones, botonCitas, botonAcercaDe,
-	botonAceptarAlumno, botonAceptarProfesor;
+	botonAceptarAlumno, botonAceptarProfesor, botonCrearProfesor, botonCrearAlumno, botonCrearTutoria, botonAceptarTutoria;
 	@FXML
 	private BorderPane panelRaiz;
 	@FXML
@@ -110,6 +131,10 @@ private TextField tfCorreoProfesor;
 	private AnchorPane panelProfesorado;
 	@FXML
 	private AnchorPane panelCrearProfesor;
+	@FXML
+	private AnchorPane panelTutorias;
+	@FXML
+	private AnchorPane panelCrearTutoria;
 
 	public void setControlador(IControlador controlador) {
 		this.controladorMVC = controlador;
@@ -121,6 +146,13 @@ private TextField tfCorreoProfesor;
 		
 		profesores.setAll(controladorMVC.getProfesores());
 		tvProfesorado.setPlaceholder(new Label("No hay profesores para mostrar."));
+		
+		tutorias.setAll(controladorMVC.getTutorias());
+		tvTutorias.setPlaceholder(new Label("No hay tutorías para mostrar."));
+		
+			cajaProfesorTutoria.getItems().set
+		
+		
 	}
 
 	private void filtrarTablas() {
@@ -147,12 +179,28 @@ private TextField tfCorreoProfesor;
 			});
 
 		});
+		
+		buscarTutoria.textProperty().addListener((prop, old, text) -> {
+			tutoriasFiltradas.setPredicate(tutoria -> {
+				if (text == null || text.isEmpty())
+					return true;
+
+				String nombre = tutoria.getNombre().toLowerCase();
+				return nombre.contains(text.toLowerCase());
+			});
+
+		});
 	}
 
 	private void limpiaFormulario() {
 		tfNombreAlumno.setText("");
 
 		tfCorreo.setText("");
+		tfCorreoProfesor.setText("");
+		tfDni.setText("");
+		tfNombreProfesor.setText("");
+		tfNombreTutoria.setText("");
+		
 
 	}
 
@@ -161,10 +209,12 @@ private TextField tfCorreoProfesor;
 
 	@FXML
 	private void irACrear(ActionEvent e) {
-		if(panelAlumnado==(AnchorPane)e.getSource())
-		panelCrearAlumno.toFront();
-		if(panelProfesorado==(AnchorPane)e.getSource())
+		if(botonCrearAlumno==(Button)e.getSource())
+			panelCrearAlumno.toFront();
+		if(botonCrearProfesor==(Button)e.getSource())
 			panelCrearProfesor.toFront();
+		if(botonCrearTutoria==(Button)e.getSource())
+			panelCrearTutoria.toFront();
 	}
 
 	@FXML
@@ -200,6 +250,7 @@ private TextField tfCorreoProfesor;
 			botonAlumnado.setId("botonPulsado");
 			cambiarEstilo(botonAlumnado);
 			panelAlumnado.toFront();
+			limpiaFormulario();
 
 		}
 
@@ -207,11 +258,14 @@ private TextField tfCorreoProfesor;
 			botonProfesorado.setId("botonPulsado");
 			cambiarEstilo(botonProfesorado);
 			panelProfesorado.toFront();
+			limpiaFormulario();
 		}
 
 		if (botonPulsado == botonTutorias) {
 			botonTutorias.setId("botonPulsado");
 			cambiarEstilo(botonTutorias);
+			panelTutorias.toFront();
+			limpiaFormulario();
 		}
 
 		if (botonPulsado == botonSesiones) {
@@ -238,6 +292,16 @@ private TextField tfCorreoProfesor;
 			limpiaFormulario();
 			panelAlumnado.toFront();
 		}
+		
+		if (botonPulsado == botonVolverProfesorado) {
+			limpiaFormulario();
+			panelProfesorado.toFront();
+		}
+		
+		if(botonPulsado==botonVolverTutorias) {
+			limpiaFormulario();
+			panelTutorias.toFront();
+		}
 	}
 
 	// Creación objetos
@@ -248,6 +312,13 @@ private TextField tfCorreoProfesor;
 
 		if (botonPulsado == botonAceptarAlumno) {
 			crearAlumno();
+		}
+		
+		if(botonPulsado == botonAceptarProfesor) {
+			crearProfesor();
+		}
+		if(botonPulsado == botonAceptarTutoria) {
+			crearTutoria();
 		}
 	}
 
@@ -265,15 +336,23 @@ private TextField tfCorreoProfesor;
 	private void observarTextFields() {
 		tfNombreAlumno.textProperty().addListener((ob, ov, nv) -> compruebaCampoTexto(ER_NOMBRE, tfNombreAlumno));
 		tfCorreo.textProperty().addListener((ob, ov, nv) -> compruebaCampoTexto(ER_CORREO, tfCorreo));
+		tfCorreoProfesor.textProperty().addListener((ob, ov, nv) -> compruebaCampoTexto(ER_CORREO, tfCorreoProfesor));
+		tfNombreProfesor.textProperty().addListener((ob, ov, nv) -> compruebaCampoTexto(ER_NOMBRE, tfNombreProfesor));
+		tfDni.textProperty().addListener((ob, ov, nv) -> compruebaCampoTexto(ER_DNI, tfDni));
+		tfNombreTutoria.textProperty().addListener((ob,ov,nv) -> compruebaCampoTexto(ER_OBLIGATORIO, tfNombreTutoria));
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
 		iniciarTablaAlumnos();
+		iniciarTablaProfesores();
+		iniciarTablaTutorias();
 		observarTextFields();
 		filtrarTablas();
 		menuContextualAlumnado();
+		menuContextualProfesorado();
+		menuContextualTutoria();
 
 	}
 
@@ -384,16 +463,6 @@ private TextField tfCorreoProfesor;
 			}
 		});
 
-		tvAlumnado.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent t) {
-				if(t.getButton() == MouseButton.SECONDARY) {
-					cm.show(tvAlumnado, t.getScreenX(), t.getScreenY());
-				}
-			}
-		});
-
 		ver.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -468,71 +537,62 @@ private TextField tfCorreoProfesor;
 	@FXML
 	private void verProfesor() {
 
-		Profesor profesor = (Profesor) tvAlumnado.getSelectionModel().getSelectedItem();
-		if (alumno == null) {
-			Dialogos.mostrarDialogoAdvertencia("", "Debes seleccionar un alumno de la tabla.");
+		Profesor profesor = (Profesor) tvProfesorado.getSelectionModel().getSelectedItem();
+		if (profesor == null) {
+			Dialogos.mostrarDialogoAdvertencia("", "Debes seleccionar un profesor de la tabla.");
 		} else {
-			GridPane panelVerAlumno = new GridPane();
-			panelVerAlumno.getStyleClass().add("gridPaneAlert");
+			GridPane panelVerProfesor = new GridPane();
+			panelVerProfesor.getStyleClass().add("gridPaneAlert");
 			TextField nombre = new TextField();
 			TextField correo = new TextField();
-			TextField expediente = new TextField();
+			TextField dni = new TextField();
 			nombre.setEditable(false);
 			correo.setEditable(false);
-			expediente.setEditable(false);
-			nombre.setText(alumno.getNombre());
-			correo.setText(alumno.getCorreo());
-			expediente.setText(alumno.getExpediente());
+			dni.setEditable(false);
+			nombre.setText(profesor.getNombre());
+			correo.setText(profesor.getCorreo());
+			dni.setText(profesor.getDni());
 			nombre.getStyleClass().addAll("textoPlano", "textoVer");
 			correo.getStyleClass().addAll("textoPlano", "textoVer");
-			expediente.getStyleClass().addAll("textoPlano", "textoVer");
-			panelVerAlumno.add(new Text("Nombre:"), 1, 0);
-			panelVerAlumno.add(nombre, 2, 0);
-			panelVerAlumno.add(new Text("Correo:"), 1, 1);
-			panelVerAlumno.add(correo, 2, 1);
-			panelVerAlumno.add(new Text("Expediente:"), 1, 2);
-			panelVerAlumno.add(expediente, 2, 2);
+			dni.getStyleClass().addAll("textoPlano", "textoVer");
+			panelVerProfesor.add(new Text("Nombre:"), 1, 0);
+			panelVerProfesor.add(nombre, 2, 0);
+			panelVerProfesor.add(new Text("Dni:"), 1, 1);
+			panelVerProfesor.add(dni, 2, 1);
+			panelVerProfesor.add(new Text("Correo:"), 1, 2);
+			panelVerProfesor.add(correo, 2, 2);
 
-			Dialogos.mostrarDialogoInformacionPersonalizado("Alumno", panelVerAlumno);
+			Dialogos.mostrarDialogoInformacionPersonalizado("", panelVerProfesor);
 
 		}
 	}
 
-	private Alumno getAlumno() {
-		Alumno alumno = null;
+	private Profesor getProfesor() {
+		Profesor profesor = null;
 		try {
-			String nombre = tfNombreAlumno.getText();
-			String correo = tfCorreo.getText();
-			alumno = new Alumno(nombre, correo);
+			String nombre = tfNombreProfesor.getText();
+			String correo = tfCorreoProfesor.getText();
+			String dni = tfDni.getText();
+			profesor = new Profesor(nombre, dni, correo);
 		} catch (NumberFormatException e) {
-			Dialogos.mostrarDialogoError("Añadir alumno", e.getMessage());
+			Dialogos.mostrarDialogoError("", e.getMessage());
 		}
-		return alumno;
+		return profesor;
 	}
 
-	private void menuContextualAlumnado(){
+	private void menuContextualProfesorado(){
 		ContextMenu cm = new ContextMenu();
 		MenuItem ver = new MenuItem("Ver");
 		cm.getItems().add(ver);
 		MenuItem borrar = new MenuItem("Borrar");
 		cm.getItems().add(borrar);
 
-		tvAlumnado.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+		tvProfesorado.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent t) {
 				if(t.getButton() == MouseButton.SECONDARY) {
-					cm.show(tvAlumnado, t.getScreenX(), t.getScreenY());
-				}
-			}
-		});
-
-		tvAlumnado.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent t) {
-				if(t.getButton() == MouseButton.SECONDARY) {
-					cm.show(tvAlumnado, t.getScreenX(), t.getScreenY());
+					cm.show(tvProfesorado, t.getScreenX(), t.getScreenY());
 				}
 			}
 		});
@@ -541,7 +601,7 @@ private TextField tfCorreoProfesor;
 
 			@Override
 			public void handle(ActionEvent event) {
-				verAlumno();
+				verProfesor();
 
 			}
 		});
@@ -552,7 +612,7 @@ private TextField tfCorreoProfesor;
 			public void handle(ActionEvent event) {
 
 				try {
-					borrarAlumno();
+					borrarProfesor();
 				} catch (OperationNotSupportedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -564,7 +624,146 @@ private TextField tfCorreoProfesor;
 		});
 	}
 
+	
 	// Tutorías
+	
+	private void iniciarTablaTutorias() {
+		tcNombreTutoria.setCellValueFactory(tutoria -> new SimpleStringProperty(tutoria.getValue().getNombre()));
+		tcProfesorT.setCellValueFactory(tutoria -> new SimpleStringProperty(tutoria.getValue().getProfesor().getNombre()));
+		
+
+		SortedList<Tutoria> tutoriasOrdenadas = new SortedList<>(tutoriasFiltradas);
+		tutoriasOrdenadas.comparatorProperty().bind(tvTutorias.comparatorProperty());
+		tvTutorias.setItems(tutoriasOrdenadas);
+
+	}
+
+	
+	private void crearTutoria() {
+		Tutoria tutoria = null;
+		try {
+			tutoria = getTutoria();
+			controladorMVC.insertar(tutoria);
+			tutorias.setAll(controladorMVC.getTutorias());
+			Dialogos.mostrarDialogoInformacion("", "Tutoría añadida satisfactoriamente.", null);
+			limpiaFormulario();
+			panelTutorias.toFront();
+		} catch (Exception e) {
+			Dialogos.mostrarDialogoError("", e.getMessage());
+		}
+	}
+
+
+	@FXML
+	private void borrarTutoria() throws OperationNotSupportedException {
+		Tutoria tutoria = (Tutoria) tvTutorias.getSelectionModel().getSelectedItem();
+		if (tutoria == null) {
+			Dialogos.mostrarDialogoAdvertencia("", "Debes seleccionar una tutoría de la tabla.");
+		} else {
+			String nombre = tutoria.getNombre();
+			if (Dialogos.mostrarDialogoConfirmacion("",
+					"¿Estás seguro de que quieres eliminar la tutoría " + nombre + "?", null)) {
+				controladorMVC.borrar(tutoria);
+				Dialogos.mostrarDialogoAdvertencia("", "Tutoría borrada satisfactoriamente.");
+				actualizaTablas();
+			}
+		}
+	}
+
+	@FXML
+	private void verTutoria() {
+
+		Tutoria tutoria = (Tutoria) tvTutorias.getSelectionModel().getSelectedItem();
+		if (tutoria == null) {
+			Dialogos.mostrarDialogoAdvertencia("", "Debes seleccionar un a tutoría de la tabla.");
+		} else {
+			GridPane panelVerTutoria = new GridPane();
+			panelVerTutoria.getStyleClass().add("gridPaneAlert");
+			TextField nombre = new TextField();
+			TextField nombreP = new TextField();
+			TextField dniP = new TextField();
+			TextField correoP = new TextField();
+			nombre.setEditable(false);
+			nombreP.setEditable(false);
+			dniP.setEditable(false);
+			correoP.setEditable(false);
+			nombre.setText(tutoria.getNombre());
+			nombreP.setText(tutoria.getProfesor().getNombre());
+			dniP.setText(tutoria.getProfesor().getDni());
+			correoP.setText(tutoria.getProfesor().getCorreo());
+			nombre.getStyleClass().addAll("textoPlano", "textoVer");
+			nombreP.getStyleClass().addAll("textoPlano", "textoVer");
+			correoP.getStyleClass().addAll("textoPlano", "textoVer");
+			dniP.getStyleClass().addAll("textoPlano", "textoVer");
+			panelVerTutoria.add(new Text("Tutoría:"), 1, 0);
+			panelVerTutoria.add(nombre, 2, 0);
+			panelVerTutoria.add(new Text("Profesor:"), 1, 1);
+			panelVerTutoria.add(nombreP, 2, 1);
+			panelVerTutoria.add(new Text("DNI:"), 1, 2);
+			panelVerTutoria.add(dniP, 2, 2);
+			panelVerTutoria.add(new Text("Correo:"), 1, 3);
+			panelVerTutoria.add(correoP, 2, 3);
+
+			Dialogos.mostrarDialogoInformacionPersonalizado("", panelVerTutoria);
+
+		}
+	}
+
+	private Tutoria getTutoria() {
+		Tutoria tutoria = null;
+		try {
+			String nombre = tfNombreTutoria.getText();
+			Profesor profesor = cajaProfesorTutoria.getValue();
+			tutoria = new Tutoria(profesor, nombre);
+		} catch (NumberFormatException e) {
+			Dialogos.mostrarDialogoError("", e.getMessage());
+		}
+		return tutoria;
+	}
+
+	private void menuContextualTutoria(){
+		ContextMenu cm = new ContextMenu();
+		MenuItem ver = new MenuItem("Ver");
+		cm.getItems().add(ver);
+		MenuItem borrar = new MenuItem("Borrar");
+		cm.getItems().add(borrar);
+
+		tvTutorias.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent t) {
+				if(t.getButton() == MouseButton.SECONDARY) {
+					cm.show(tvTutorias, t.getScreenX(), t.getScreenY());
+				}
+			}
+		});
+
+		ver.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				verTutoria();
+
+			}
+		});
+
+		borrar.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+
+				try {
+					borrarTutoria();
+				} catch (OperationNotSupportedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+
+			}
+
+		});
+	}
 
 	// Sesiones
 

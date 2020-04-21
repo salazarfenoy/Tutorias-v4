@@ -157,20 +157,6 @@
          <center>
             <StackPane fx:id="stack" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="597.0" prefWidth="1240.0" BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="592.0" prefWidth="1235.0" style="-fx-background-color: white;">
-                     <children>
-                        <Text fill="#868686" layoutX="402.0" layoutY="143.0" opacity="0.3" strokeType="OUTSIDE" strokeWidth="0.0" text="Bienvenido/a">
-                           <font>
-                              <Font name="Franklin Gothic Medium" size="75.0" />
-                           </font>
-                        </Text>
-                        <Text layoutX="368.0" layoutY="251.0" lineSpacing="12.0" opacity="0.73" strokeType="OUTSIDE" strokeWidth="0.0" text="Este es el software para gestionar las tutorías del IES Al-Ándalus de Almería. En el menú de la izquierda tienes las distintas opciones a las que puedes acceder y en las que podrás desde registrarte como alumno o profesor, hasta pedir una cita para una tutoría de tu asignatura o módulo." textAlignment="JUSTIFY" wrappingWidth="499.154296875">
-                           <font>
-                              <Font name="Cambria Italic" size="20.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </AnchorPane>
                   <AnchorPane fx:id="panelCrearAlumno" layoutX="13.0" layoutY="13.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="592.0" prefWidth="1235.0" style="-fx-background-color: white;">
                      <children>
                         <Text fill="#868686" layoutX="314.0" layoutY="119.0" opacity="0.3" strokeType="OUTSIDE" strokeWidth="0.0" text="Registro de alumnado">
@@ -239,7 +225,7 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Button alignment="BASELINE_LEFT" graphicTextGap="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#irACrear" prefHeight="67.0" prefWidth="230.0" styleClass="botonComunRegistrar" text="Registrar alumno" textFill="WHITE">
+                              <Button fx:id="botonCrearAlumno" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#irACrear" prefHeight="67.0" prefWidth="230.0" styleClass="botonComunRegistrar" text="Registrar alumno" textFill="WHITE">
                                  <graphic>
                                     <ImageView fitHeight="45.0" fitWidth="45.0">
                                        <image>
@@ -285,11 +271,70 @@
                         </GridPane>
                      </children>
                   </AnchorPane>
+                  <AnchorPane fx:id="panelCrearProfesor" layoutX="13.0" layoutY="13.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="592.0" prefWidth="1235.0" style="-fx-background-color: white;">
+                     <children>
+                        <Text fill="#868686" layoutX="288.0" layoutY="121.0" opacity="0.3" strokeType="OUTSIDE" strokeWidth="0.0" text="Registro de profesorado">
+                           <font>
+                              <Font name="Franklin Gothic Medium" size="64.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="438.0" layoutY="192.0" lineSpacing="12.0" opacity="0.73" strokeType="OUTSIDE" strokeWidth="0.0" text="Rellena los datos del profesor a registrar." textAlignment="JUSTIFY" wrappingWidth="358.154296875">
+                           <font>
+                              <Font name="Cambria Italic" size="20.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="tfNombreProfesor" layoutX="520.0" layoutY="250.0" prefHeight="25.0" prefWidth="195.0" promptText="Nombre y apellidos" styleClass="textoPlano">
+                           <font>
+                              <Font name="Cambria" size="16.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="tfCorreoProfesor" layoutX="520.0" layoutY="343.0" prefHeight="25.0" prefWidth="195.0" promptText="Correo electrónico" styleClass="textoPlano">
+                           <font>
+                              <Font name="Cambria" size="16.0" />
+                           </font>
+                        </TextField>
+                        <Button fx:id="botonAceptarProfesor" layoutX="558.0" layoutY="433.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#aceptarYCrear" prefHeight="45.0" prefWidth="120.0" style="-fx-background-color: #044678;" styleClass="botonAceptar" text="Aceptar" textFill="WHITE">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <font>
+                              <Font name="Cambria" size="18.0" />
+                           </font>
+                        </Button>
+                        <ImageView fx:id="botonVolverProfesorado" fitHeight="60.0" fitWidth="60.0" layoutX="41.0" layoutY="14.0" onMouseClicked="#volver">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <image>
+                              <Image url="@../imagenes/volver.png" />
+                           </image>
+                        </ImageView>
+                        <TextField fx:id="tfDni" layoutX="520.0" layoutY="296.0" prefHeight="25.0" prefWidth="195.0" promptText="DNI" styleClass="textoPlano">
+                           <font>
+                              <Font name="Cambria" size="16.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="592.0" prefWidth="1235.0" style="-fx-background-color: white;">
+                     <children>
+                        <Text fill="#868686" layoutX="402.0" layoutY="143.0" opacity="0.3" strokeType="OUTSIDE" strokeWidth="0.0" text="Bienvenido/a">
+                           <font>
+                              <Font name="Franklin Gothic Medium" size="75.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="368.0" layoutY="251.0" lineSpacing="12.0" opacity="0.73" strokeType="OUTSIDE" strokeWidth="0.0" text="Este es el software para gestionar las tutorías del IES Al-Ándalus de Almería. En el menú de la izquierda tienes las distintas opciones a las que puedes acceder y en las que podrás desde registrarte como alumno o profesor, hasta pedir una cita para una tutoría de tu asignatura o módulo." textAlignment="JUSTIFY" wrappingWidth="499.154296875">
+                           <font>
+                              <Font name="Cambria Italic" size="20.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </AnchorPane>
                   <AnchorPane fx:id="panelProfesorado" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;">
                      <children>
                         <TableView fx:id="tvProfesorado" layoutX="344.0" layoutY="92.0" prefHeight="473.0" prefWidth="848.0" styleClass="tablaDatosComun">
                            <columns>
-                              <TableColumn fx:id="tcNombrePr" prefWidth="298.0" text="Nombre" />
+                              <TableColumn fx:id="tcNombreP" prefWidth="298.0" text="Nombre" />
                               <TableColumn fx:id="tcDni" prefWidth="233.0" text="DNI" />
                               <TableColumn fx:id="tcCorreoP" prefWidth="314.0" text="Correo electrónico" />
                            </columns>
@@ -305,7 +350,7 @@
                         </ImageView>
                         <GridPane layoutX="70.0" layoutY="84.0" prefHeight="251.0" prefWidth="237.0">
                            <children>
-                              <Button alignment="BASELINE_LEFT" graphicTextGap="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#irACrear" prefHeight="67.0" prefWidth="230.0" styleClass="botonComunRegistrar" text="Registrar profesor" textFill="WHITE">
+                              <Button fx:id="botonCrearProfesor" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#irACrear" prefHeight="67.0" prefWidth="230.0" styleClass="botonComunRegistrar" text="Registrar profesor" textFill="WHITE">
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
@@ -359,29 +404,97 @@
                         </GridPane>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="panelCrearAlumno1" layoutX="13.0" layoutY="13.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="592.0" prefWidth="1235.0" style="-fx-background-color: white;">
+                  <AnchorPane fx:id="panelTutorias" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;">
                      <children>
-                        <Text fill="#868686" layoutX="288.0" layoutY="121.0" opacity="0.3" strokeType="OUTSIDE" strokeWidth="0.0" text="Registro de profesorado">
+                        <TableView fx:id="tvTutorias" layoutX="344.0" layoutY="92.0" prefHeight="473.0" prefWidth="848.0" styleClass="tablaDatosComun">
+                           <columns>
+                              <TableColumn fx:id="tcNombreTutoria" prefWidth="398.0" text="Tutoría" />
+                              <TableColumn fx:id="tcProfesorT" prefWidth="449.0" text="Profesor" />
+                           </columns>
+                           <cursor>
+                              <Cursor fx:constant="DEFAULT" />
+                           </cursor>
+                        </TableView>
+                        <TextField fx:id="buscarTutoria" layoutX="1041.0" layoutY="58.0" promptText="Buscar tutoría" styleClass="textoPlano" />
+                        <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="1016.0" layoutY="65.0">
+                           <image>
+                              <Image url="@../imagenes/lupa.png" />
+                           </image>
+                        </ImageView>
+                        <GridPane layoutX="70.0" layoutY="84.0" prefHeight="251.0" prefWidth="237.0">
+                           <children>
+                              <Button fx:id="botonCrearTutoria" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#irACrear" prefHeight="67.0" prefWidth="230.0" styleClass="botonComunRegistrar" text="Crear tutoría" textFill="WHITE">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <font>
+                                    <Font name="Cambria" size="16.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="45.0" fitWidth="45.0">
+                                       <image>
+                                          <Image url="@../imagenes/suma.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Button alignment="BASELINE_LEFT" graphicTextGap="20.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#borrarTutoria" prefHeight="57.0" prefWidth="195.0" styleClass="botonComunBorrar" text="Borrar tutoría" textFill="WHITE" GridPane.rowIndex="2">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <font>
+                                    <Font name="Cambria" size="16.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="40.0" fitWidth="40.0">
+                                       <image>
+                                          <Image url="@../imagenes/eliminar.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Button alignment="BASELINE_LEFT" graphicTextGap="21.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#verTutoria" styleClass="botonComunVer" text="Ver tutoría" GridPane.rowIndex="1">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <graphic>
+                                    <ImageView fitHeight="40.0" fitWidth="40.0">
+                                       <image>
+                                          <Image url="@../imagenes/ver.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="panelCrearTutoria" layoutX="13.0" layoutY="13.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="592.0" prefWidth="1235.0" style="-fx-background-color: white;">
+                     <children>
+                        <Text fill="#868686" layoutX="288.0" layoutY="121.0" opacity="0.3" strokeType="OUTSIDE" strokeWidth="0.0" text="Registro de tutorías">
                            <font>
                               <Font name="Franklin Gothic Medium" size="64.0" />
                            </font>
                         </Text>
-                        <Text layoutX="438.0" layoutY="192.0" lineSpacing="12.0" opacity="0.73" strokeType="OUTSIDE" strokeWidth="0.0" text="Rellena los datos del profesor a registrar." textAlignment="JUSTIFY" wrappingWidth="358.154296875">
+                        <Text layoutX="438.0" layoutY="192.0" lineSpacing="12.0" opacity="0.73" strokeType="OUTSIDE" strokeWidth="0.0" text="Rellena los datos de la tutoría a crear." textAlignment="JUSTIFY" wrappingWidth="358.154296875">
                            <font>
                               <Font name="Cambria Italic" size="20.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="tfNombreProfesor" layoutX="520.0" layoutY="250.0" prefHeight="25.0" prefWidth="195.0" promptText="Nombre y apellidos" styleClass="textoPlano">
+                        <TextField fx:id="tfNombreTutoria" layoutX="520.0" layoutY="250.0" prefHeight="25.0" prefWidth="195.0" promptText="Nombre de la tutoría" styleClass="textoPlano">
                            <font>
                               <Font name="Cambria" size="16.0" />
                            </font>
                         </TextField>
-                        <TextField fx:id="tfCorreoProfesor" layoutX="520.0" layoutY="343.0" prefHeight="25.0" prefWidth="195.0" promptText="Correo electrónico" styleClass="textoPlano">
-                           <font>
-                              <Font name="Cambria" size="16.0" />
-                           </font>
-                        </TextField>
-                        <Button fx:id="botonAceptarProfesor" layoutX="558.0" layoutY="433.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#aceptarYCrear" prefHeight="45.0" prefWidth="120.0" style="-fx-background-color: #044678;" styleClass="botonAceptar" text="Aceptar" textFill="WHITE">
+                        <Button fx:id="botonAceptarTutoria" layoutX="558.0" layoutY="433.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#aceptarYCrear" prefHeight="45.0" prefWidth="120.0" style="-fx-background-color: #044678;" styleClass="botonAceptar" text="Aceptar" textFill="WHITE">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -389,7 +502,7 @@
                               <Font name="Cambria" size="18.0" />
                            </font>
                         </Button>
-                        <ImageView fx:id="botonVolverAlumnado1" fitHeight="60.0" fitWidth="60.0" layoutX="41.0" layoutY="14.0" onMouseClicked="#volver">
+                        <ImageView fx:id="botonVolverTutorias" fitHeight="60.0" fitWidth="60.0" layoutX="41.0" layoutY="14.0" onMouseClicked="#volver">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -397,11 +510,7 @@
                               <Image url="@../imagenes/volver.png" />
                            </image>
                         </ImageView>
-                        <TextField fx:id="tfDni" layoutX="520.0" layoutY="296.0" prefHeight="25.0" prefWidth="195.0" promptText="DNI" styleClass="textoPlano">
-                           <font>
-                              <Font name="Cambria" size="16.0" />
-                           </font>
-                        </TextField>
+                        <ComboBox fx:id="cajaProfesorTutoria" layoutX="542.0" layoutY="335.0" prefWidth="150.0" />
                      </children>
                   </AnchorPane>
                </children>
