@@ -510,7 +510,7 @@
                               <Image url="@../imagenes/volver.png" />
                            </image>
                         </ImageView>
-                        <ComboBox fx:id="cajaProfesorTutoria" layoutX="542.0" layoutY="335.0" prefWidth="150.0" />
+                        <ComboBox fx:id="cajaProfesorTutoria" layoutX="520.0" layoutY="335.0" prefHeight="25.0" prefWidth="195.0" promptText="-- Elija un profesor --" styleClass="textoPlano" visibleRowCount="5" />
                      </children>
                   </AnchorPane>
                </children>

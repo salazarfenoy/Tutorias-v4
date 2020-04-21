@@ -28,6 +28,8 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -41,6 +43,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 public class ControladorPrincipal implements Initializable {
 
@@ -150,7 +153,22 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 		tutorias.setAll(controladorMVC.getTutorias());
 		tvTutorias.setPlaceholder(new Label("No hay tutorías para mostrar."));
 		
-			cajaProfesorTutoria.getItems().set
+		
+			cajaProfesorTutoria.getItems().addAll(profesores);
+			
+			Callback<ListView<Profesor>, ListCell<Profesor>> factory = lv -> new ListCell<Profesor>() {
+
+			    @Override
+			    protected void updateItem(Profesor profesor, boolean empty) {
+			        super.updateItem(profesor, empty);
+			        setText(empty ? "" : profesor.getNombre());
+			    }
+
+			};
+
+			cajaProfesorTutoria.setCellFactory(factory);
+			cajaProfesorTutoria.setButtonCell(factory.call(null));
+			
 		
 		
 	}
@@ -200,7 +218,7 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 		tfDni.setText("");
 		tfNombreProfesor.setText("");
 		tfNombreTutoria.setText("");
-		
+		cajaProfesorTutoria.valueProperty().set(null);
 
 	}
 
