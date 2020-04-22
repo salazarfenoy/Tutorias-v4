@@ -1,6 +1,10 @@
-package org.iesalandalus.programacion.tutorias.mvc.vista.grafica;
+package org.iesalandalus.programacion.tutorias.mvc.vista.grafica.controladoriugrafica;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import javax.naming.OperationNotSupportedException;
@@ -8,9 +12,13 @@ import javax.naming.OperationNotSupportedException;
 import org.iesalandalus.programacion.tutorias.mvc.controlador.IControlador;
 import org.iesalandalus.programacion.tutorias.mvc.modelo.dominio.Alumno;
 import org.iesalandalus.programacion.tutorias.mvc.modelo.dominio.Profesor;
+import org.iesalandalus.programacion.tutorias.mvc.modelo.dominio.Sesion;
 import org.iesalandalus.programacion.tutorias.mvc.modelo.dominio.Tutoria;
 import org.iesalandalus.programacion.utilidades.Dialogos;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,6 +30,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 
 import javafx.fxml.Initializable;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -50,6 +59,8 @@ public class ControladorPrincipal implements Initializable {
 	private IControlador controladorMVC;
 
 	// ER
+	private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	private static final DateTimeFormatter FORMATO_HORA = DateTimeFormatter.ofPattern("HH:mm");
 
 	private static final String ER_OBLIGATORIO = ".+";
 
@@ -68,14 +79,24 @@ public class ControladorPrincipal implements Initializable {
 	
 	private ObservableList<Tutoria> tutorias = FXCollections.observableArrayList();
 	private FilteredList<Tutoria> tutoriasFiltradas = new FilteredList<>(tutorias, p -> true);
+	
+	private ObservableList<Tutoria> tutoriasProfesor = FXCollections.observableArrayList();
+	private FilteredList<Tutoria> tutoriasFiltradasP = new FilteredList<>(tutoriasProfesor, p -> true);
+	
+	private ObservableList<Sesion> sesiones = FXCollections.observableArrayList();
+	private FilteredList<Sesion> sesionesFiltradas = new FilteredList<>(sesiones, p -> true);
+	
+	private ObservableList<Sesion> sesionesTutoria = FXCollections.observableArrayList();
+	private FilteredList<Sesion> sesionesFiltradasT = new FilteredList<>(sesionesTutoria, p -> true);
 
-
+@FXML private Accordion acordeonListarTutorias;
 	@FXML
 	private TableView<Alumno> tvAlumnado;
 	@FXML
 	private TableView<Profesor> tvProfesorado;
 	@FXML
 	private TableView<Tutoria> tvTutorias;
+	@FXML private TableView<Sesion> tvSesiones;
 
 	@FXML
 	private TableColumn<Alumno, String> tcNombre;
@@ -95,6 +116,18 @@ public class ControladorPrincipal implements Initializable {
 	private TableColumn<Tutoria, String> tcProfesorT;
 	@FXML
 	private TableColumn<Tutoria, String> tcNombreTutoria;
+	
+	@FXML
+	private TableColumn<Sesion, String> tcProfesorS;
+	@FXML
+	private TableColumn<Sesion, String> tcNombreTutoriaS;
+	@FXML
+	private TableColumn<Sesion, String> tcFecha;
+	@FXML
+	private TableColumn<Sesion, String> tcHora;
+	@FXML
+	private TableColumn<Sesion, Integer> tcDuracion;
+	
 	
 
 	// TextFields
@@ -118,6 +151,13 @@ private TextField tfCorreoProfesor;
 private TextField tfNombreTutoria;
 @FXML
 private ComboBox<Profesor> cajaProfesorTutoria;
+@FXML
+private ComboBox<Profesor> cajaProfesorListarT;
+@FXML
+private ComboBox<Tutoria> cajaTutoriaListarS;
+@FXML
+private ComboBox<Tutoria> cajaTutoriaSesion;
+
 	// Botones y Paneles
 	@FXML
 	private ImageView botonVolverAlumnado, botonVolverProfesorado, botonVolverTutorias;
@@ -141,33 +181,29 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 
 	public void setControlador(IControlador controlador) {
 		this.controladorMVC = controlador;
+		
 	}
 
 	public void actualizaTablas() {
-		alumnos.setAll(controladorMVC.getAlumnos());
+		
+		actualizaAlumnos();
+		actualizaProfesores();
+		actualizaTutorias();
+		
+		
 		tvAlumnado.setPlaceholder(new Label("No hay alumnos para mostrar."));
 		
-		profesores.setAll(controladorMVC.getProfesores());
+	
+	
 		tvProfesorado.setPlaceholder(new Label("No hay profesores para mostrar."));
 		
-		tutorias.setAll(controladorMVC.getTutorias());
+	
 		tvTutorias.setPlaceholder(new Label("No hay tutorías para mostrar."));
 		
 		
-			cajaProfesorTutoria.getItems().addAll(profesores);
 			
-			Callback<ListView<Profesor>, ListCell<Profesor>> factory = lv -> new ListCell<Profesor>() {
-
-			    @Override
-			    protected void updateItem(Profesor profesor, boolean empty) {
-			        super.updateItem(profesor, empty);
-			        setText(empty ? "" : profesor.getNombre());
-			    }
-
-			};
-
-			cajaProfesorTutoria.setCellFactory(factory);
-			cajaProfesorTutoria.setButtonCell(factory.call(null));
+			
+			
 			
 		
 		
@@ -208,6 +244,21 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 			});
 
 		});
+		
+		buscarTutoria.textProperty().addListener((prop, old, text) -> {
+			tutoriasFiltradasP.setPredicate(tutoria -> {
+				if (text == null || text.isEmpty())
+					return true;
+
+				String nombre = tutoria.getNombre().toLowerCase();
+				return nombre.contains(text.toLowerCase());
+			});
+
+		});
+		
+	
+		
+		
 	}
 
 	private void limpiaFormulario() {
@@ -219,6 +270,8 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 		tfNombreProfesor.setText("");
 		tfNombreTutoria.setText("");
 		cajaProfesorTutoria.valueProperty().set(null);
+		cajaTutoriaListarS.valueProperty().set(null);
+		acordeonListarTutorias.setExpandedPane(null);
 
 	}
 
@@ -267,6 +320,7 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 		if (botonPulsado == botonAlumnado) {
 			botonAlumnado.setId("botonPulsado");
 			cambiarEstilo(botonAlumnado);
+			
 			panelAlumnado.toFront();
 			limpiaFormulario();
 
@@ -275,6 +329,7 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 		if (botonPulsado == botonProfesorado) {
 			botonProfesorado.setId("botonPulsado");
 			cambiarEstilo(botonProfesorado);
+			
 			panelProfesorado.toFront();
 			limpiaFormulario();
 		}
@@ -282,6 +337,7 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 		if (botonPulsado == botonTutorias) {
 			botonTutorias.setId("botonPulsado");
 			cambiarEstilo(botonTutorias);
+			tvTutorias.setItems(tutorias);
 			panelTutorias.toFront();
 			limpiaFormulario();
 		}
@@ -363,9 +419,12 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
+		
 		iniciarTablaAlumnos();
 		iniciarTablaProfesores();
+		
 		iniciarTablaTutorias();
+		
 		observarTextFields();
 		filtrarTablas();
 		menuContextualAlumnado();
@@ -376,6 +435,10 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 
 	// Alumnos
 
+	private void actualizaAlumnos() {
+		
+		alumnos.setAll(controladorMVC.getAlumnos());
+	}
 	private void iniciarTablaAlumnos() {
 		tcNombre.setCellValueFactory(alumno -> new SimpleStringProperty(alumno.getValue().getNombre()));
 		tcCorreo.setCellValueFactory(alumno -> new SimpleStringProperty(alumno.getValue().getCorreo()));
@@ -393,8 +456,8 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 		try {
 			alumno = getAlumno();
 			controladorMVC.insertar(alumno);
-			alumnos.setAll(controladorMVC.getAlumnos());
 			Dialogos.mostrarDialogoInformacion("", "Alumno añadido satisfactoriamente.", null);
+			alumnos.setAll(controladorMVC.getAlumnos());
 			limpiaFormulario();
 			panelAlumnado.toFront();
 		} catch (Exception e) {
@@ -412,9 +475,11 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 			String nombre = alumno.getNombre();
 			if (Dialogos.mostrarDialogoConfirmacion("",
 					"¿Estás seguro de que quieres eliminar al alumno " + nombre + "?", null)) {
+				
 				controladorMVC.borrar(alumno);
+				actualizaAlumnos();
 				Dialogos.mostrarDialogoAdvertencia("", "Alumno borrado satisfactoriamente");
-				actualizaTablas();
+				
 			}
 		}
 	}
@@ -450,6 +515,67 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 			Dialogos.mostrarDialogoInformacionPersonalizado("Alumno", panelVerAlumno);
 
 		}
+	}
+	
+	private void verAlumnoBuscado(Alumno alumno) {
+		if (alumno == null) {
+			Dialogos.mostrarDialogoAdvertencia("", "No existe ese alumno.");
+		} else {
+			GridPane panelVerAlumno = new GridPane();
+			panelVerAlumno.getStyleClass().add("gridPaneAlert");
+			TextField nombre = new TextField();
+			TextField correo = new TextField();
+			TextField expediente = new TextField();
+			nombre.setEditable(false);
+			correo.setEditable(false);
+			expediente.setEditable(false);
+			nombre.setText(alumno.getNombre());
+			correo.setText(alumno.getCorreo());
+			expediente.setText(alumno.getExpediente());
+			nombre.getStyleClass().addAll("textoPlano", "textoVer");
+			correo.getStyleClass().addAll("textoPlano", "textoVer");
+			expediente.getStyleClass().addAll("textoPlano", "textoVer");
+			panelVerAlumno.add(new Text("Nombre:"), 1, 0);
+			panelVerAlumno.add(nombre, 2, 0);
+			panelVerAlumno.add(new Text("Correo:"), 1, 1);
+			panelVerAlumno.add(correo, 2, 1);
+			panelVerAlumno.add(new Text("Expediente:"), 1, 2);
+			panelVerAlumno.add(expediente, 2, 2);
+
+			Dialogos.mostrarDialogoBuscado("Alumno", panelVerAlumno);
+
+		}
+	}
+	
+	@FXML
+	private void buscarAlumno() {
+		VBox panelBuscarAlumno = new VBox();
+		panelBuscarAlumno.getStyleClass().add("gridPaneAlert");
+		Label titulo = new Label("Buscar alumno");
+		TextField correo = new TextField();
+		correo.getStyleClass().add("textoPlano");
+		correo.textProperty().addListener((ob,ov,nv) -> compruebaCampoTexto(ER_CORREO, correo));
+		
+		panelBuscarAlumno.getChildren().addAll(titulo,correo);
+		
+		if(Dialogos.mostrarDialogoConfirmacion("", panelBuscarAlumno, null)) {
+			
+			String correoTexto = correo.getText();
+			Alumno alumno = null;
+			
+			try {
+				alumno = alumno.getAlumnoFicticio(correoTexto);
+				alumno = controladorMVC.buscar(alumno);
+				verAlumnoBuscado(alumno);
+			} catch(Exception e){
+				Dialogos.mostrarDialogoError("", e.getMessage());
+				
+			}
+			
+			
+			
+		}
+		
 	}
 
 	private Alumno getAlumno() {
@@ -509,6 +635,11 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 	}
 	// Profesorado
 	
+	@FXML
+	private void actualizaProfesores() {
+		profesores.setAll(controladorMVC.getProfesores());
+	}
+	
 	private void iniciarTablaProfesores() {
 		tcNombreP.setCellValueFactory(profesor -> new SimpleStringProperty(profesor.getValue().getNombre()));
 		tcCorreoP.setCellValueFactory(profesor -> new SimpleStringProperty(profesor.getValue().getCorreo()));
@@ -526,9 +657,9 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 		try {
 			profesor = getProfesor();
 			controladorMVC.insertar(profesor);
-			profesores.setAll(controladorMVC.getProfesores());
 			Dialogos.mostrarDialogoInformacion("", "Profesor añadido satisfactoriamente.", null);
 			limpiaFormulario();
+			actualizaProfesores();
 			panelProfesorado.toFront();
 		} catch (Exception e) {
 			Dialogos.mostrarDialogoError("", e.getMessage());
@@ -546,8 +677,9 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 			if (Dialogos.mostrarDialogoConfirmacion("",
 					"¿Estás seguro de que quieres eliminar al profesor " + nombre + "?", null)) {
 				controladorMVC.borrar(profesor);
+				actualizaProfesores();
 				Dialogos.mostrarDialogoAdvertencia("", "Profesor borrado satisfactoriamente");
-				actualizaTablas();
+				
 			}
 		}
 	}
@@ -583,6 +715,67 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 			Dialogos.mostrarDialogoInformacionPersonalizado("", panelVerProfesor);
 
 		}
+	}
+	
+	private void verProfesorBuscado(Profesor profesor) {
+		if (profesor == null) {
+			Dialogos.mostrarDialogoAdvertencia("", "No existe ese profesor.");
+		} else {
+			GridPane panelVerProfesor = new GridPane();
+			panelVerProfesor.getStyleClass().add("gridPaneAlert");
+			TextField nombre = new TextField();
+			TextField correo = new TextField();
+			TextField dni = new TextField();
+			nombre.setEditable(false);
+			correo.setEditable(false);
+			dni.setEditable(false);
+			nombre.setText(profesor.getNombre());
+			correo.setText(profesor.getCorreo());
+			dni.setText(profesor.getDni());
+			nombre.getStyleClass().addAll("textoPlano", "textoVer");
+			correo.getStyleClass().addAll("textoPlano", "textoVer");
+			dni.getStyleClass().addAll("textoPlano", "textoVer");
+			panelVerProfesor.add(new Text("Nombre:"), 1, 0);
+			panelVerProfesor.add(nombre, 2, 0);
+			panelVerProfesor.add(new Text("Dni:"), 1, 1);
+			panelVerProfesor.add(dni, 2, 1);
+			panelVerProfesor.add(new Text("Correo:"), 1, 2);
+			panelVerProfesor.add(correo, 2, 2);
+
+			Dialogos.mostrarDialogoInformacionPersonalizado("", panelVerProfesor);
+
+		}
+	}
+	
+	@FXML
+	private void buscarProfesor() {
+		VBox panelBuscarProfesor = new VBox();
+		panelBuscarProfesor.getStyleClass().add("gridPaneAlert");
+		Label titulo = new Label("Buscar profesor");
+		TextField dni = new TextField();
+		dni.getStyleClass().add("textoPlano");
+		dni.textProperty().addListener((ob,ov,nv) -> compruebaCampoTexto(ER_DNI, dni));
+		
+		panelBuscarProfesor.getChildren().addAll(titulo,dni);
+		
+		if(Dialogos.mostrarDialogoConfirmacion("", panelBuscarProfesor, null)) {
+			
+			String dniTexto = dni.getText();
+			Profesor profesor = null;
+			
+			try {
+				profesor = profesor.getProfesorFicticio(dniTexto);
+				profesor = controladorMVC.buscar(profesor);
+				verProfesorBuscado(profesor);
+			} catch(Exception e){
+				Dialogos.mostrarDialogoError("", e.getMessage());
+				
+			}
+			
+			
+			
+		}
+		
 	}
 
 	private Profesor getProfesor() {
@@ -645,6 +838,45 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 	
 	// Tutorías
 	
+	@FXML
+	private void listar() {
+		Profesor profesor= cajaProfesorListarT.getSelectionModel().getSelectedItem();
+		tutoriasProfesor.setAll(controladorMVC.getTutorias(profesor));
+		
+		SortedList<Tutoria> tutoriasOrdenadasP = new SortedList<>(tutoriasFiltradasP);
+		tutoriasOrdenadasP.comparatorProperty().bind(tvTutorias.comparatorProperty());
+		
+		tvTutorias.setItems(tutoriasOrdenadasP);
+		
+	}
+	@FXML
+	private void actualizaTutorias() {
+		tutorias.setAll(controladorMVC.getTutorias());
+		cajaProfesorTutoria.getItems().clear();
+		cajaProfesorTutoria.getItems().addAll(profesores);
+		Callback<ListView<Profesor>, ListCell<Profesor>> factory = lv -> new ListCell<Profesor>() {
+
+		    @Override
+		    protected void updateItem(Profesor profesor, boolean empty) {
+		        super.updateItem(profesor, empty);
+		        setText(empty ? "" : profesor.getNombre());
+		    }
+
+		};
+
+		cajaProfesorTutoria.setCellFactory(factory);
+		cajaProfesorTutoria.setButtonCell(factory.call(null));
+		
+		cajaProfesorListarT.getItems().clear();
+		cajaProfesorListarT.getItems().addAll(profesores);
+		cajaProfesorListarT.setCellFactory(factory);
+		cajaProfesorListarT.setButtonCell(factory.call(null));
+		
+		
+	}
+
+	@FXML
+	
 	private void iniciarTablaTutorias() {
 		tcNombreTutoria.setCellValueFactory(tutoria -> new SimpleStringProperty(tutoria.getValue().getNombre()));
 		tcProfesorT.setCellValueFactory(tutoria -> new SimpleStringProperty(tutoria.getValue().getProfesor().getNombre()));
@@ -662,9 +894,9 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 		try {
 			tutoria = getTutoria();
 			controladorMVC.insertar(tutoria);
-			tutorias.setAll(controladorMVC.getTutorias());
 			Dialogos.mostrarDialogoInformacion("", "Tutoría añadida satisfactoriamente.", null);
 			limpiaFormulario();
+			actualizaTutorias();
 			panelTutorias.toFront();
 		} catch (Exception e) {
 			Dialogos.mostrarDialogoError("", e.getMessage());
@@ -682,8 +914,9 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 			if (Dialogos.mostrarDialogoConfirmacion("",
 					"¿Estás seguro de que quieres eliminar la tutoría " + nombre + "?", null)) {
 				controladorMVC.borrar(tutoria);
+				actualizaTutorias();
 				Dialogos.mostrarDialogoAdvertencia("", "Tutoría borrada satisfactoriamente.");
-				actualizaTablas();
+				
 			}
 		}
 	}
@@ -784,6 +1017,186 @@ private ComboBox<Profesor> cajaProfesorTutoria;
 	}
 
 	// Sesiones
+	
+	@FXML
+	private void listarSesionT() {
+		Tutoria tutoria= cajaTutoriaListarS.getSelectionModel().getSelectedItem();
+		sesionesTutoria.setAll(controladorMVC.getSesiones(tutoria));
+		
+		SortedList<Sesion> sesionesOrdenadasT = new SortedList<>(sesionesFiltradasT);
+		sesionesOrdenadasT.comparatorProperty().bind(tvSesiones.comparatorProperty());
+		
+		tvSesiones.setItems(sesionesOrdenadasT);
+		
+	}
+	@FXML
+	private void actualizaSesiones() {
+		sesiones.setAll(controladorMVC.getSesiones());
+		cajaTutoriaSesion.getItems().clear();
+		cajaTutoriaSesion.getItems().addAll(profesores);
+		Callback<ListView<Tutoria>, ListCell<Tutoria>> factory = lv -> new ListCell<Tutoria>() {
+
+		    @Override
+		    protected void updateItem(Tutoria tutoria, boolean empty) {
+		        super.updateItem(tutoria, empty);
+		        setText(empty ? "" : tutoria.getNombre());
+		    }
+
+		};
+
+		cajaTutoriaSesion.setCellFactory(factory);
+		cajaTutoriaSesion.setButtonCell(factory.call(null));
+		
+		cajaTutoriaListarS.getItems().clear();
+		cajaTutoriaListarS.getItems().addAll(tutorias);
+		cajaTutoriaListarS.setCellFactory(factory);
+		cajaTutoriaListarS.setButtonCell(factory.call(null));
+		
+		
+	}
+
+	@FXML
+	
+	private void iniciarTablaSesiones() {
+		tcNombreTutoriaS.setCellValueFactory(sesion -> new SimpleStringProperty(sesion.getValue().getTutoria().getNombre()));
+		tcProfesorS.setCellValueFactory(sesion -> new SimpleStringProperty(sesion.getValue().getTutoria().getProfesor().getNombre()));
+		tcFecha.setCellValueFactory(sesion -> new SimpleStringProperty(FORMATO_FECHA.format(sesion.getValue().getFecha())));
+		tcHora.setCellValueFactory(sesion -> new SimpleStringProperty(FORMATO_HORA.format(sesion.getValue().getHoraInicio()).concat(" - ").concat(FORMATO_HORA.format(sesion.getValue().getHoraFin()))));
+		tcDuracion.setCellValueFactory(sesion -> new SimpleIntegerProperty(sesion.getValue().getMinutosDuracion()).asObject());
+
+		SortedList<Sesion> sesionesOrdenadas = new SortedList<>(sesionesFiltradas);
+		sesionesOrdenadas.comparatorProperty().bind(tvSesiones.comparatorProperty());
+		tvSesiones.setItems(sesionesOrdenadas);
+
+	}
+
+	
+	private void crearSesion() {
+		Tutoria tutoria = null;
+		try {
+			tutoria = getTutoria();
+			controladorMVC.insertar(tutoria);
+			Dialogos.mostrarDialogoInformacion("", "Tutoría añadida satisfactoriamente.", null);
+			limpiaFormulario();
+			actualizaTutorias();
+			panelTutorias.toFront();
+		} catch (Exception e) {
+			Dialogos.mostrarDialogoError("", e.getMessage());
+		}
+	}
+
+
+	@FXML
+	private void borrarTutoria() throws OperationNotSupportedException {
+		Tutoria tutoria = (Tutoria) tvTutorias.getSelectionModel().getSelectedItem();
+		if (tutoria == null) {
+			Dialogos.mostrarDialogoAdvertencia("", "Debes seleccionar una tutoría de la tabla.");
+		} else {
+			String nombre = tutoria.getNombre();
+			if (Dialogos.mostrarDialogoConfirmacion("",
+					"¿Estás seguro de que quieres eliminar la tutoría " + nombre + "?", null)) {
+				controladorMVC.borrar(tutoria);
+				actualizaTutorias();
+				Dialogos.mostrarDialogoAdvertencia("", "Tutoría borrada satisfactoriamente.");
+				
+			}
+		}
+	}
+
+	@FXML
+	private void verTutoria() {
+
+		Tutoria tutoria = (Tutoria) tvTutorias.getSelectionModel().getSelectedItem();
+		if (tutoria == null) {
+			Dialogos.mostrarDialogoAdvertencia("", "Debes seleccionar un a tutoría de la tabla.");
+		} else {
+			GridPane panelVerTutoria = new GridPane();
+			panelVerTutoria.getStyleClass().add("gridPaneAlert");
+			TextField nombre = new TextField();
+			TextField nombreP = new TextField();
+			TextField dniP = new TextField();
+			TextField correoP = new TextField();
+			nombre.setEditable(false);
+			nombreP.setEditable(false);
+			dniP.setEditable(false);
+			correoP.setEditable(false);
+			nombre.setText(tutoria.getNombre());
+			nombreP.setText(tutoria.getProfesor().getNombre());
+			dniP.setText(tutoria.getProfesor().getDni());
+			correoP.setText(tutoria.getProfesor().getCorreo());
+			nombre.getStyleClass().addAll("textoPlano", "textoVer");
+			nombreP.getStyleClass().addAll("textoPlano", "textoVer");
+			correoP.getStyleClass().addAll("textoPlano", "textoVer");
+			dniP.getStyleClass().addAll("textoPlano", "textoVer");
+			panelVerTutoria.add(new Text("Tutoría:"), 1, 0);
+			panelVerTutoria.add(nombre, 2, 0);
+			panelVerTutoria.add(new Text("Profesor:"), 1, 1);
+			panelVerTutoria.add(nombreP, 2, 1);
+			panelVerTutoria.add(new Text("DNI:"), 1, 2);
+			panelVerTutoria.add(dniP, 2, 2);
+			panelVerTutoria.add(new Text("Correo:"), 1, 3);
+			panelVerTutoria.add(correoP, 2, 3);
+
+			Dialogos.mostrarDialogoInformacionPersonalizado("", panelVerTutoria);
+
+		}
+	}
+
+	private Tutoria getTutoria() {
+		Tutoria tutoria = null;
+		try {
+			String nombre = tfNombreTutoria.getText();
+			Profesor profesor = cajaProfesorTutoria.getValue();
+			tutoria = new Tutoria(profesor, nombre);
+		} catch (NumberFormatException e) {
+			Dialogos.mostrarDialogoError("", e.getMessage());
+		}
+		return tutoria;
+	}
+
+	private void menuContextualTutoria(){
+		ContextMenu cm = new ContextMenu();
+		MenuItem ver = new MenuItem("Ver");
+		cm.getItems().add(ver);
+		MenuItem borrar = new MenuItem("Borrar");
+		cm.getItems().add(borrar);
+
+		tvTutorias.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent t) {
+				if(t.getButton() == MouseButton.SECONDARY) {
+					cm.show(tvTutorias, t.getScreenX(), t.getScreenY());
+				}
+			}
+		});
+
+		ver.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				verTutoria();
+
+			}
+		});
+
+		borrar.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+
+				try {
+					borrarTutoria();
+				} catch (OperationNotSupportedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+
+			}
+
+		});
+	}
 
 	// Citas
 

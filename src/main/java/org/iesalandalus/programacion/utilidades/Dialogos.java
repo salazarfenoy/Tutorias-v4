@@ -5,6 +5,8 @@ import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.Pane;
@@ -14,9 +16,10 @@ import javafx.stage.StageStyle;
 
 public class Dialogos {
 	
-	private static final String CSS = "../tutorias/mvc/vista/grafica/estilos/estilo1.css";
+	private static final String CSS = "/org/iesalandalus/programacion/tutorias/mvc/vista/estilos/estilo1.css";
 	private static final String ID_BT_ACEPTAR = "btAceptar";
 	private static final String ID_BT_CANCELAR = "btCancelar";
+	private static final String ID_BT_BORRAR = "btBorrar";
 	
 	private Dialogos() {
 		//Evitamos que se puedan instanciar objetos
@@ -144,4 +147,40 @@ public class Dialogos {
 		return (respuesta.isPresent() && respuesta.get() == ButtonType.OK);
 	}
 	
+	public static boolean mostrarDialogoConfirmacion(String titulo, Pane contenido, Stage propietario) {
+		Alert dialogo = new Alert(AlertType.CONFIRMATION);
+		dialogo.getDialogPane().getStylesheets().add(Dialogos.class.getResource(CSS).toExternalForm());
+		((Button) dialogo.getDialogPane().lookupButton(ButtonType.OK)).setId(ID_BT_ACEPTAR);
+		((Button) dialogo.getDialogPane().lookupButton(ButtonType.CANCEL)).setId(ID_BT_CANCELAR);
+		dialogo.getDialogPane().getStyleClass().add("salir");
+		dialogo.setTitle(titulo);
+		dialogo.setHeaderText(null);
+		dialogo.setContentText(null);
+		dialogo.getDialogPane().setHeader(contenido);
+		dialogo.initStyle(StageStyle.UNDECORATED);
+		if (propietario != null) {
+			dialogo.initModality(Modality.APPLICATION_MODAL);
+			dialogo.initOwner(propietario);
+		}
+
+		Optional<ButtonType> respuesta = dialogo.showAndWait();
+		return (respuesta.isPresent() && respuesta.get() == ButtonType.OK);
+	}
+	public static boolean mostrarDialogoBuscado(String titulo, Pane contenido) {
+		Alert dialogo = new Alert(AlertType.CONFIRMATION);
+		dialogo.getDialogPane().getStylesheets().add(Dialogos.class.getResource(CSS).toExternalForm());
+		((Button) dialogo.getDialogPane().lookupButton(ButtonType.OK)).setId(ID_BT_ACEPTAR);
+		((Button) dialogo.getDialogPane().lookupButton(ButtonType.CANCEL)).setId(ID_BT_BORRAR);
+		((Button) dialogo.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Borrar");
+		dialogo.getDialogPane().getStyleClass().add("salir");
+		dialogo.setTitle(titulo);
+		dialogo.setHeaderText(null);
+		dialogo.setContentText(null);
+		dialogo.getDialogPane().setHeader(contenido);
+		dialogo.initStyle(StageStyle.UNDECORATED);
+		
+
+		Optional<ButtonType> respuesta = dialogo.showAndWait();
+		return (respuesta.isPresent() && respuesta.get() == ButtonType.OK);
+	}
 }

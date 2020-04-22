@@ -2,6 +2,7 @@ package org.iesalandalus.programacion.tutorias.mvc.vista.grafica;
 
 import org.iesalandalus.programacion.tutorias.mvc.controlador.IControlador;
 import org.iesalandalus.programacion.tutorias.mvc.vista.IVista;
+import org.iesalandalus.programacion.tutorias.mvc.vista.grafica.controladoriugrafica.ControladorPrincipal;
 import org.iesalandalus.programacion.utilidades.Dialogos;
 
 import javafx.application.Application;
@@ -49,7 +50,6 @@ public class VistaGrafica extends Application implements IVista {
 			ControladorPrincipal cPrincipal = cargadorPrincipal.getController();
 			cPrincipal.setControlador(controladorMVC);
 			cPrincipal.actualizaTablas();
-			raiz.getStylesheets().add(getClass().getResource("estilos/estilo1.css").toExternalForm());
 			Scene escena = new Scene(raiz);
 			escenarioPrincipal.setScene(escena);
 			escenarioPrincipal.setOnCloseRequest(e -> confirmarSalida(escenarioPrincipal, e));
@@ -61,9 +61,6 @@ public class VistaGrafica extends Application implements IVista {
 		}
 	}
 	
-	public static void main(String[] args) {
-		launch(args);
-	}
 
 	private void confirmarSalida(Stage escenarioPrincipal, WindowEvent e) {
 		if (Dialogos.mostrarDialogoConfirmacion("Salir", "¿Estás seguro de que quieres salir?", null)) {
@@ -92,7 +89,7 @@ public class VistaGrafica extends Application implements IVista {
 	@Override
 	public void terminar() {
 		
-		
+		controladorMVC.terminar();
 	}
 
 
