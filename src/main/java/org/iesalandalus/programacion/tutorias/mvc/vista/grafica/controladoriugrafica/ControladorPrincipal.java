@@ -3,6 +3,8 @@ package org.iesalandalus.programacion.tutorias.mvc.vista.grafica.controladoriugr
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.Chronology;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -36,6 +38,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -53,6 +56,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 
 public class ControladorPrincipal implements Initializable {
 
@@ -90,6 +94,7 @@ public class ControladorPrincipal implements Initializable {
 	private FilteredList<Sesion> sesionesFiltradasT = new FilteredList<>(sesionesTutoria, p -> true);
 
 @FXML private Accordion acordeonListarTutorias;
+@FXML private Accordion acordeonListarSesiones;
 	@FXML
 	private TableView<Alumno> tvAlumnado;
 	@FXML
@@ -129,6 +134,8 @@ public class ControladorPrincipal implements Initializable {
 	private TableColumn<Sesion, Integer> tcDuracion;
 	
 	
+	
+	
 
 	// TextFields
 	@FXML
@@ -141,6 +148,8 @@ public class ControladorPrincipal implements Initializable {
 	private TextField buscarProfesor;
 	@FXML
 	private TextField buscarTutoria;
+	@FXML
+	private TextField buscarSesion;
 @FXML
 private TextField tfNombreProfesor;
 @FXML
@@ -149,21 +158,31 @@ private TextField tfDni;
 private TextField tfCorreoProfesor;
 @FXML 
 private TextField tfNombreTutoria;
+@FXML 
+private DatePicker tfFecha;
+@FXML
+private DatePicker filtrarSesionFecha;
+@FXML 
+private TextField tfHoraInicio;
+@FXML 
+private TextField tfHoraFin;
+@FXML 
+private TextField tfDuracion;
 @FXML
 private ComboBox<Profesor> cajaProfesorTutoria;
 @FXML
 private ComboBox<Profesor> cajaProfesorListarT;
 @FXML
-private ComboBox<Tutoria> cajaTutoriaListarS;
+private ComboBox<Tutoria> cajaTutoriasListarS;
 @FXML
 private ComboBox<Tutoria> cajaTutoriaSesion;
 
 	// Botones y Paneles
 	@FXML
-	private ImageView botonVolverAlumnado, botonVolverProfesorado, botonVolverTutorias;
+	private ImageView botonVolverAlumnado, botonVolverProfesorado, botonVolverTutorias, botonVolverSesion;
 	@FXML
 	private Button botonSalir, botonAlumnado, botonProfesorado, botonTutorias, botonSesiones, botonCitas, botonAcercaDe,
-	botonAceptarAlumno, botonAceptarProfesor, botonCrearProfesor, botonCrearAlumno, botonCrearTutoria, botonAceptarTutoria;
+	botonAceptarAlumno, botonAceptarProfesor, botonCrearProfesor, botonCrearAlumno, botonCrearTutoria, botonAceptarTutoria, botonCrearSesion, botonAceptarSesion;
 	@FXML
 	private BorderPane panelRaiz;
 	@FXML
@@ -178,6 +197,11 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 	private AnchorPane panelTutorias;
 	@FXML
 	private AnchorPane panelCrearTutoria;
+	@FXML
+	private AnchorPane panelSesiones;
+	@FXML
+	private AnchorPane panelCrearSesion;
+	
 
 	public void setControlador(IControlador controlador) {
 		this.controladorMVC = controlador;
@@ -189,6 +213,7 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		actualizaAlumnos();
 		actualizaProfesores();
 		actualizaTutorias();
+		actualizaSesiones();
 		
 		
 		tvAlumnado.setPlaceholder(new Label("No hay alumnos para mostrar."));
@@ -199,6 +224,8 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		
 	
 		tvTutorias.setPlaceholder(new Label("No hay tutorías para mostrar."));
+		
+		tvSesiones.setPlaceholder(new Label("No hay sesiones para mostrar."));
 		
 		
 			
@@ -256,6 +283,51 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 
 		});
 		
+		buscarSesion.textProperty().addListener((prop, old, text) -> {
+			sesionesFiltradas.setPredicate(sesion -> {
+				if (text == null || text.isEmpty())
+					return true;
+
+				String nombre = sesion.getTutoria().getNombre().toLowerCase();
+				return nombre.contains(text.toLowerCase());
+			});
+
+		});
+		
+		buscarSesion.textProperty().addListener((prop, old, text) -> {
+			sesionesFiltradasT.setPredicate(sesion -> {
+				if (text == null || text.isEmpty())
+					return true;
+
+				String nombre = sesion.getTutoria().getNombre().toLowerCase();
+				return nombre.contains(text.toLowerCase());
+			});
+
+		});
+		
+		filtrarSesionFecha.valueProperty().addListener((prop, old, text) -> {
+			sesionesFiltradas.setPredicate(sesion -> {
+				if (text == null )
+					return true;
+
+				LocalDate fecha = sesion.getFecha();
+				return fecha.isEqual(text);
+			});
+
+		});
+		
+		filtrarSesionFecha.valueProperty().addListener((prop, old, text) -> {
+			sesionesFiltradasT.setPredicate(sesion -> {
+				if (text == null )
+					return true;
+
+				LocalDate fecha = sesion.getFecha();
+				return fecha.isEqual(text);
+			});
+
+		});
+		
+		
 	
 		
 		
@@ -270,8 +342,16 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		tfNombreProfesor.setText("");
 		tfNombreTutoria.setText("");
 		cajaProfesorTutoria.valueProperty().set(null);
-		cajaTutoriaListarS.valueProperty().set(null);
+		cajaTutoriasListarS.valueProperty().set(null);
 		acordeonListarTutorias.setExpandedPane(null);
+		cajaTutoriasListarS.valueProperty().set(null);
+		cajaTutoriaSesion.valueProperty().set(null);
+		acordeonListarSesiones.setExpandedPane(null);
+		tfFecha.valueProperty().set(null);
+		tfHoraFin.setText("");
+		tfHoraInicio.setText("");
+		tfDuracion.setText("");
+		filtrarSesionFecha.valueProperty().set(null);
 
 	}
 
@@ -286,6 +366,8 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 			panelCrearProfesor.toFront();
 		if(botonCrearTutoria==(Button)e.getSource())
 			panelCrearTutoria.toFront();
+		if(botonCrearSesion==(Button)e.getSource())
+			panelCrearSesion.toFront();
 	}
 
 	@FXML
@@ -337,7 +419,7 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		if (botonPulsado == botonTutorias) {
 			botonTutorias.setId("botonPulsado");
 			cambiarEstilo(botonTutorias);
-			tvTutorias.setItems(tutorias);
+			tutorias.setAll(controladorMVC.getTutorias());
 			panelTutorias.toFront();
 			limpiaFormulario();
 		}
@@ -345,6 +427,9 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		if (botonPulsado == botonSesiones) {
 			botonSesiones.setId("botonPulsado");
 			cambiarEstilo(botonSesiones);
+			sesiones.setAll(controladorMVC.getSesiones());
+			panelSesiones.toFront();
+			limpiaFormulario();
 		}
 
 		if (botonPulsado == botonCitas) {
@@ -376,6 +461,10 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 			limpiaFormulario();
 			panelTutorias.toFront();
 		}
+		if(botonPulsado==botonVolverSesion) {
+			limpiaFormulario();
+			panelSesiones.toFront();
+		}
 	}
 
 	// Creación objetos
@@ -393,6 +482,9 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		}
 		if(botonPulsado == botonAceptarTutoria) {
 			crearTutoria();
+		}
+		if(botonPulsado==botonAceptarSesion) {
+			crearSesion();
 		}
 	}
 
@@ -414,6 +506,7 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		tfNombreProfesor.textProperty().addListener((ob, ov, nv) -> compruebaCampoTexto(ER_NOMBRE, tfNombreProfesor));
 		tfDni.textProperty().addListener((ob, ov, nv) -> compruebaCampoTexto(ER_DNI, tfDni));
 		tfNombreTutoria.textProperty().addListener((ob,ov,nv) -> compruebaCampoTexto(ER_OBLIGATORIO, tfNombreTutoria));
+		
 	}
 
 	@Override
@@ -424,12 +517,14 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		iniciarTablaProfesores();
 		
 		iniciarTablaTutorias();
+		iniciarTablaSesiones();
 		
 		observarTextFields();
 		filtrarTablas();
 		menuContextualAlumnado();
 		menuContextualProfesorado();
 		menuContextualTutoria();
+		menuContextualSesion();
 
 	}
 
@@ -854,23 +949,11 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		tutorias.setAll(controladorMVC.getTutorias());
 		cajaProfesorTutoria.getItems().clear();
 		cajaProfesorTutoria.getItems().addAll(profesores);
-		Callback<ListView<Profesor>, ListCell<Profesor>> factory = lv -> new ListCell<Profesor>() {
-
-		    @Override
-		    protected void updateItem(Profesor profesor, boolean empty) {
-		        super.updateItem(profesor, empty);
-		        setText(empty ? "" : profesor.getNombre());
-		    }
-
-		};
-
-		cajaProfesorTutoria.setCellFactory(factory);
-		cajaProfesorTutoria.setButtonCell(factory.call(null));
+		
 		
 		cajaProfesorListarT.getItems().clear();
 		cajaProfesorListarT.getItems().addAll(profesores);
-		cajaProfesorListarT.setCellFactory(factory);
-		cajaProfesorListarT.setButtonCell(factory.call(null));
+		
 		
 		
 	}
@@ -885,6 +968,20 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		SortedList<Tutoria> tutoriasOrdenadas = new SortedList<>(tutoriasFiltradas);
 		tutoriasOrdenadas.comparatorProperty().bind(tvTutorias.comparatorProperty());
 		tvTutorias.setItems(tutoriasOrdenadas);
+		Callback<ListView<Profesor>, ListCell<Profesor>> factory = lv -> new ListCell<Profesor>() {
+
+		    @Override
+		    protected void updateItem(Profesor profesor, boolean empty) {
+		        super.updateItem(profesor, empty);
+		        setText(empty ? "" : profesor.getNombre());
+		    }
+
+		};
+
+		cajaProfesorTutoria.setCellFactory(factory);
+		cajaProfesorTutoria.setButtonCell(factory.call(null));
+		cajaProfesorListarT.setCellFactory(factory);
+		cajaProfesorListarT.setButtonCell(factory.call(null));
 
 	}
 
@@ -920,7 +1017,13 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 			}
 		}
 	}
-
+	@FXML
+	private void mostrarTutoriasTodas() {
+		SortedList<Tutoria> tutoriasOrdenadas = new SortedList<>(tutoriasFiltradas);
+		tutoriasOrdenadas.comparatorProperty().bind(tvTutorias.comparatorProperty());
+		tvTutorias.setItems(tutoriasOrdenadas);
+		
+	}
 	@FXML
 	private void verTutoria() {
 
@@ -1020,7 +1123,7 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 	
 	@FXML
 	private void listarSesionT() {
-		Tutoria tutoria= cajaTutoriaListarS.getSelectionModel().getSelectedItem();
+		Tutoria tutoria= cajaTutoriasListarS.getSelectionModel().getSelectedItem();
 		sesionesTutoria.setAll(controladorMVC.getSesiones(tutoria));
 		
 		SortedList<Sesion> sesionesOrdenadasT = new SortedList<>(sesionesFiltradasT);
@@ -1033,24 +1136,14 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 	private void actualizaSesiones() {
 		sesiones.setAll(controladorMVC.getSesiones());
 		cajaTutoriaSesion.getItems().clear();
-		cajaTutoriaSesion.getItems().addAll(profesores);
-		Callback<ListView<Tutoria>, ListCell<Tutoria>> factory = lv -> new ListCell<Tutoria>() {
-
-		    @Override
-		    protected void updateItem(Tutoria tutoria, boolean empty) {
-		        super.updateItem(tutoria, empty);
-		        setText(empty ? "" : tutoria.getNombre());
-		    }
-
-		};
-
-		cajaTutoriaSesion.setCellFactory(factory);
-		cajaTutoriaSesion.setButtonCell(factory.call(null));
+		cajaTutoriaSesion.getItems().addAll(tutorias);
+		cajaTutoriasListarS.getItems().clear();
+		cajaTutoriasListarS.getItems().addAll(tutorias);
 		
-		cajaTutoriaListarS.getItems().clear();
-		cajaTutoriaListarS.getItems().addAll(tutorias);
-		cajaTutoriaListarS.setCellFactory(factory);
-		cajaTutoriaListarS.setButtonCell(factory.call(null));
+		
+		
+		
+	
 		
 		
 	}
@@ -1067,19 +1160,41 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		SortedList<Sesion> sesionesOrdenadas = new SortedList<>(sesionesFiltradas);
 		sesionesOrdenadas.comparatorProperty().bind(tvSesiones.comparatorProperty());
 		tvSesiones.setItems(sesionesOrdenadas);
+		
+		Callback<ListView<Tutoria>, ListCell<Tutoria>> factory = lv -> new ListCell<Tutoria>() {
+
+		    @Override
+		    protected void updateItem(Tutoria tutoria, boolean empty) {
+		        super.updateItem(tutoria, empty);
+		        setText(empty ? "" : tutoria.getNombre().concat(" - ").concat(tutoria.getProfesor().getNombre()));
+		    }
+
+		};
+cajaTutoriasListarS.setCellFactory(factory);
+cajaTutoriasListarS.setButtonCell(factory.call(null));
+		cajaTutoriaSesion.setCellFactory(factory);
+		cajaTutoriaSesion.setButtonCell(factory.call(null));
 
 	}
 
+	@FXML
+	private void mostrarSesionesTodas() {
+		SortedList<Sesion> sesionesOrdenadas = new SortedList<>(sesionesFiltradas);
+		sesionesOrdenadas.comparatorProperty().bind(tvSesiones.comparatorProperty());
+		tvSesiones.setItems(sesionesOrdenadas);
+		tvSesiones.setItems(sesionesOrdenadas);
+		filtrarSesionFecha.valueProperty().set(null);
+	}
 	
 	private void crearSesion() {
-		Tutoria tutoria = null;
+		Sesion sesion = null;
 		try {
-			tutoria = getTutoria();
-			controladorMVC.insertar(tutoria);
-			Dialogos.mostrarDialogoInformacion("", "Tutoría añadida satisfactoriamente.", null);
+			sesion = getSesion();
+			controladorMVC.insertar(sesion);
+			Dialogos.mostrarDialogoInformacion("", "Sesión añadida satisfactoriamente.", null);
 			limpiaFormulario();
-			actualizaTutorias();
-			panelTutorias.toFront();
+			sesiones.setAll(controladorMVC.getSesiones());
+			panelSesiones.toFront();
 		} catch (Exception e) {
 			Dialogos.mostrarDialogoError("", e.getMessage());
 		}
@@ -1087,86 +1202,110 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 
 
 	@FXML
-	private void borrarTutoria() throws OperationNotSupportedException {
-		Tutoria tutoria = (Tutoria) tvTutorias.getSelectionModel().getSelectedItem();
-		if (tutoria == null) {
-			Dialogos.mostrarDialogoAdvertencia("", "Debes seleccionar una tutoría de la tabla.");
+	private void borrarSesion() throws OperationNotSupportedException {
+		Sesion sesion = (Sesion) tvSesiones.getSelectionModel().getSelectedItem();
+		if (sesion == null) {
+			Dialogos.mostrarDialogoAdvertencia("", "Debes seleccionar una sesión de la tabla.");
 		} else {
-			String nombre = tutoria.getNombre();
+			
 			if (Dialogos.mostrarDialogoConfirmacion("",
-					"¿Estás seguro de que quieres eliminar la tutoría " + nombre + "?", null)) {
-				controladorMVC.borrar(tutoria);
-				actualizaTutorias();
-				Dialogos.mostrarDialogoAdvertencia("", "Tutoría borrada satisfactoriamente.");
+					"¿Estás seguro de que quieres eliminar esta sesión?", null)) {
+				controladorMVC.borrar(sesion);
+				actualizaSesiones();
+				Dialogos.mostrarDialogoAdvertencia("", "Sesión borrada satisfactoriamente.");
 				
 			}
 		}
 	}
 
 	@FXML
-	private void verTutoria() {
+	private void verSesion() {
 
-		Tutoria tutoria = (Tutoria) tvTutorias.getSelectionModel().getSelectedItem();
-		if (tutoria == null) {
-			Dialogos.mostrarDialogoAdvertencia("", "Debes seleccionar un a tutoría de la tabla.");
+		Sesion sesion = (Sesion) tvSesiones.getSelectionModel().getSelectedItem();
+		if (sesion == null) {
+			Dialogos.mostrarDialogoAdvertencia("", "Debes seleccionar una sesión de la tabla.");
 		} else {
-			GridPane panelVerTutoria = new GridPane();
-			panelVerTutoria.getStyleClass().add("gridPaneAlert");
-			TextField nombre = new TextField();
+			
+			GridPane panelVerSesion = new GridPane();
+			panelVerSesion.getStyleClass().add("gridPaneAlert");
+			TextField tutoria = new TextField();
 			TextField nombreP = new TextField();
 			TextField dniP = new TextField();
 			TextField correoP = new TextField();
-			nombre.setEditable(false);
+			TextField fecha = new TextField();
+			TextField hora = new TextField();
+			TextField duracion = new TextField();
+			tutoria.setEditable(false);
 			nombreP.setEditable(false);
 			dniP.setEditable(false);
 			correoP.setEditable(false);
-			nombre.setText(tutoria.getNombre());
-			nombreP.setText(tutoria.getProfesor().getNombre());
-			dniP.setText(tutoria.getProfesor().getDni());
-			correoP.setText(tutoria.getProfesor().getCorreo());
-			nombre.getStyleClass().addAll("textoPlano", "textoVer");
+			fecha.setEditable(false);
+			hora.setEditable(false);
+			duracion.setEditable(false);
+			tutoria.setText(sesion.getTutoria().getNombre());
+			nombreP.setText(sesion.getTutoria().getProfesor().getNombre());
+			dniP.setText(sesion.getTutoria().getProfesor().getDni());
+			correoP.setText(sesion.getTutoria().getProfesor().getCorreo());
+			fecha.setText(FORMATO_FECHA.format(sesion.getFecha()));
+			hora.setText(FORMATO_HORA.format(sesion.getHoraInicio()).concat(" - ").concat(FORMATO_HORA.format(sesion.getHoraFin())));
+			duracion.setText(String.valueOf(sesion.getMinutosDuracion()).concat(" minutos"));
+			tutoria.getStyleClass().addAll("textoPlano", "textoVer");
 			nombreP.getStyleClass().addAll("textoPlano", "textoVer");
 			correoP.getStyleClass().addAll("textoPlano", "textoVer");
 			dniP.getStyleClass().addAll("textoPlano", "textoVer");
-			panelVerTutoria.add(new Text("Tutoría:"), 1, 0);
-			panelVerTutoria.add(nombre, 2, 0);
-			panelVerTutoria.add(new Text("Profesor:"), 1, 1);
-			panelVerTutoria.add(nombreP, 2, 1);
-			panelVerTutoria.add(new Text("DNI:"), 1, 2);
-			panelVerTutoria.add(dniP, 2, 2);
-			panelVerTutoria.add(new Text("Correo:"), 1, 3);
-			panelVerTutoria.add(correoP, 2, 3);
+			fecha.getStyleClass().addAll("textoPlano", "textoVer");
+			hora.getStyleClass().addAll("textoPlano", "textoVer");
+			duracion.getStyleClass().addAll("textoPlano", "textoVer");
+			panelVerSesion.add(new Text("Tutoría:"), 1, 0);
+			panelVerSesion.add(tutoria, 2, 0);
+			panelVerSesion.add(new Text("Profesor:"), 1, 1);
+			panelVerSesion.add(nombreP, 2, 1);
+			panelVerSesion.add(new Text("DNI:"), 1, 2);
+			panelVerSesion.add(dniP, 2, 2);
+			panelVerSesion.add(new Text("Correo:"), 1, 3);
+			panelVerSesion.add(correoP, 2, 3);
+			panelVerSesion.add(new Text("Fecha:"), 1, 4);
+			panelVerSesion.add(fecha, 2, 4);
+			panelVerSesion.add(new Text("Hora:"), 1, 5);
+			panelVerSesion.add(hora, 2, 5);
+			panelVerSesion.add(new Text("Duración:"), 1, 6);
+			panelVerSesion.add(duracion, 2, 6);
 
-			Dialogos.mostrarDialogoInformacionPersonalizado("", panelVerTutoria);
+			Dialogos.mostrarDialogoInformacionPersonalizado("", panelVerSesion);
 
 		}
 	}
 
-	private Tutoria getTutoria() {
-		Tutoria tutoria = null;
+	private Sesion getSesion() {
+		Sesion sesion = null;
 		try {
-			String nombre = tfNombreTutoria.getText();
-			Profesor profesor = cajaProfesorTutoria.getValue();
-			tutoria = new Tutoria(profesor, nombre);
+			Tutoria tutoria = cajaTutoriaSesion.getSelectionModel().getSelectedItem();
+			
+			LocalDate fecha = tfFecha.getValue();
+			LocalTime horaI = LocalTime.parse(tfHoraInicio.getText(), FORMATO_HORA);
+			LocalTime horaF = LocalTime.parse(tfHoraFin.getText(), FORMATO_HORA);
+			int duracion = Integer.parseInt(tfDuracion.getText());
+			
+			sesion = new Sesion(tutoria,fecha,horaI,horaF,duracion);
 		} catch (NumberFormatException e) {
 			Dialogos.mostrarDialogoError("", e.getMessage());
 		}
-		return tutoria;
+		return sesion;
 	}
 
-	private void menuContextualTutoria(){
+	private void menuContextualSesion(){
 		ContextMenu cm = new ContextMenu();
 		MenuItem ver = new MenuItem("Ver");
 		cm.getItems().add(ver);
 		MenuItem borrar = new MenuItem("Borrar");
 		cm.getItems().add(borrar);
 
-		tvTutorias.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+		tvSesiones.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent t) {
 				if(t.getButton() == MouseButton.SECONDARY) {
-					cm.show(tvTutorias, t.getScreenX(), t.getScreenY());
+					cm.show(tvSesiones, t.getScreenX(), t.getScreenY());
 				}
 			}
 		});
@@ -1175,7 +1314,7 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 
 			@Override
 			public void handle(ActionEvent event) {
-				verTutoria();
+				verSesion();
 
 			}
 		});
@@ -1186,7 +1325,7 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 			public void handle(ActionEvent event) {
 
 				try {
-					borrarTutoria();
+					borrarSesion();
 				} catch (OperationNotSupportedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

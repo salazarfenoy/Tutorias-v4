@@ -241,7 +241,8 @@
 
 .titled-pane > .title > .arrow-button .arrow 
 {
- -fx-shape: ".";
+ -fx-shape: null;
+ -fx-opacity:0
      
 }
 
