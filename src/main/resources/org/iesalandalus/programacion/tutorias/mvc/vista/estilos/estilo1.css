@@ -276,3 +276,24 @@
 }
 
 
+/*
+ * 
+ * Menú contextual
+ * 
+ */
+ 
+ .cMenu {
+ 	-fx-background-color:#042c66;
+ 	-fx-text-fill:white
+ 
+ }
+
+.menu-item .label{
+	-fx-text-fill:white
+}
+.menu-item:hover{
+	-fx-background-color:#043E91
+	}
+.menu-item:focused{
+	-fx-background-color:#043E91
+}
