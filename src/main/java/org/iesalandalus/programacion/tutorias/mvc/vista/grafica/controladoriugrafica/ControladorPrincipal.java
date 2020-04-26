@@ -1,11 +1,8 @@
 package org.iesalandalus.programacion.tutorias.mvc.vista.grafica.controladoriugrafica;
 
-
-
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
-
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -22,7 +19,6 @@ import org.iesalandalus.programacion.tutorias.mvc.modelo.dominio.Profesor;
 import org.iesalandalus.programacion.tutorias.mvc.modelo.dominio.Sesion;
 import org.iesalandalus.programacion.tutorias.mvc.modelo.dominio.Tutoria;
 import org.iesalandalus.programacion.utilidades.Dialogos;
-
 
 import javafx.beans.property.SimpleIntegerProperty;
 
@@ -56,11 +52,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-
 
 public class ControladorPrincipal implements Initializable {
 
@@ -77,192 +73,147 @@ public class ControladorPrincipal implements Initializable {
 
 	private static final String ER_DNI = "\\d{8}[A-Za-z]";
 
-	// TableViews
+	// Observable y filtered list
 
 	private ObservableList<Alumno> alumnos = FXCollections.observableArrayList();
 	private FilteredList<Alumno> alumnosFiltrados = new FilteredList<>(alumnos, p -> true);
-	
+
 	private ObservableList<Profesor> profesores = FXCollections.observableArrayList();
 	private FilteredList<Profesor> profesoresFiltrados = new FilteredList<>(profesores, p -> true);
-	
+
 	private ObservableList<Tutoria> tutorias = FXCollections.observableArrayList();
 	private FilteredList<Tutoria> tutoriasFiltradas = new FilteredList<>(tutorias, p -> true);
-	
-	
+
 	private ObservableList<Sesion> sesiones = FXCollections.observableArrayList();
 	private FilteredList<Sesion> sesionesFiltradas = new FilteredList<>(sesiones, p -> true);
-	
+
 	private ObservableList<Cita> citas = FXCollections.observableArrayList();
 	private FilteredList<Cita> citasFiltradas = new FilteredList<>(citas, p -> true);
-	
 
-// TableViews
-	@FXML
-	private TableView<Alumno> tvAlumnado;
-	@FXML
-	private TableView<Profesor> tvProfesorado;
-	@FXML
-	private TableView<Tutoria> tvTutorias;
+	// TableViews
+	@FXML private TableView<Alumno> tvAlumnado;
+	@FXML private TableView<Profesor> tvProfesorado;
+	@FXML private TableView<Tutoria> tvTutorias;
 	@FXML private TableView<Sesion> tvSesiones;
 	@FXML private TableView<Cita> tvCitas;
 
 	// tc Alumnado
-	@FXML
-	private TableColumn<Alumno, String> tcNombre;
-	@FXML
-	private TableColumn<Alumno, String> tcCorreo;
-	@FXML
-	private TableColumn<Alumno, String> tcExpediente;
-	
-	//tc Profesores
-	@FXML
-	private TableColumn<Profesor, String> tcNombreP;
-	@FXML
-	private TableColumn<Profesor, String> tcCorreoP;
-	@FXML
-	private TableColumn<Profesor, String> tcDni;
-	
-	//tc Tutorías
-	@FXML
-	private TableColumn<Tutoria, String> tcProfesorT;
-	@FXML
-	private TableColumn<Tutoria, String> tcNombreTutoria;
-	
+	@FXML private TableColumn<Alumno, String> tcNombre;
+	@FXML private TableColumn<Alumno, String> tcCorreo;
+	@FXML private TableColumn<Alumno, String> tcExpediente;
+
+	// tc Profesores
+	@FXML private TableColumn<Profesor, String> tcNombreP;
+	@FXML private TableColumn<Profesor, String> tcCorreoP;
+	@FXML private TableColumn<Profesor, String> tcDni;
+
+	// tc Tutorías
+	@FXML private TableColumn<Tutoria, String> tcProfesorT;
+	@FXML private TableColumn<Tutoria, String> tcNombreTutoria;
+
 	// tc Sesiones
-	@FXML
-	private TableColumn<Sesion, String> tcProfesorS;
-	@FXML
-	private TableColumn<Sesion, String> tcNombreTutoriaS;
-	@FXML
-	private TableColumn<Sesion, String> tcFecha;
-	@FXML
-	private TableColumn<Sesion, String> tcHora;
-	@FXML
-	private TableColumn<Sesion, Integer> tcDuracion;
-	
+	@FXML private TableColumn<Sesion, String> tcProfesorS;
+	@FXML private TableColumn<Sesion, String> tcNombreTutoriaS;
+	@FXML private TableColumn<Sesion, String> tcFecha;
+	@FXML private TableColumn<Sesion, String> tcHora;
+	@FXML private TableColumn<Sesion, Integer> tcDuracion;
+
 	// tc Citas
-	
+
 	@FXML private TableColumn<Cita, String> tcNombreTutoriaC;
 	@FXML private TableColumn<Cita, String> tcSesionC;
 	@FXML private TableColumn<Cita, String> tcHoraC;
 	@FXML private TableColumn<Cita, String> tcAlumnoC;
-	
-	
 
 	// TextFields
-	
-	@FXML
-	private TextField tfNombreAlumno;
-	@FXML
-	private TextField tfCorreo;
-	@FXML
-	private TextField buscarAlumno;
-	@FXML 
-	private TextField buscarProfesor;
-	@FXML
-	private TextField buscarTutoria;
-	@FXML
-	private TextField buscarSesion;
-@FXML
-private TextField tfNombreProfesor;
-@FXML
-private TextField tfDni;
-@FXML
-private TextField tfCorreoProfesor;
-@FXML 
-private TextField tfNombreTutoria;
-@FXML 
-private DatePicker tfFecha;
-@FXML
-private DatePicker filtrarSesionFecha;
-@FXML 
-private TextField tfHoraInicio;
-@FXML 
-private TextField tfHoraFin;
-@FXML 
-private TextField tfDuracion;
-@FXML
-private ComboBox<Profesor> cajaProfesorTutoria;
-@FXML
-private ComboBox<Profesor> cajaProfesorListarT;
-@FXML
-private ComboBox<Tutoria> cajaTutoriasListarS;
-@FXML
-private ComboBox<Tutoria> cajaTutoriaSesion;
-@FXML private TextField filtrarTutoriaC;
-@FXML private TextField filtrarAlumnoC;
-@FXML private DatePicker filtrarFechaC;
 
-//Crear sesión
-@FXML private ComboBox<Alumno> cajaAlumnoCita;
-@FXML private ComboBox<Tutoria> cajaTutoriaCita;
-@FXML private ComboBox<Sesion> cajaSesionCita;
-@FXML private ComboBox<LocalTime> cajaHoraCita;
+	// Crear alumno
+	@FXML private TextField tfNombreAlumno;
+	@FXML private TextField tfCorreo;
+
+	// Crear profesor
+
+	@FXML private TextField tfNombreProfesor;
+	@FXML private TextField tfDni;
+	@FXML private TextField tfCorreoProfesor;
+
+	// Crear tutoría
+
+	@FXML private TextField tfNombreTutoria;
+	@FXML private ComboBox<Profesor> cajaProfesorTutoria;
+
+	// Crear sesión
+
+	@FXML private DatePicker tfFecha;
+	@FXML private TextField tfHoraInicio;
+	@FXML private TextField tfHoraFin;
+	@FXML private TextField tfDuracion;
+	@FXML private ComboBox<Tutoria> cajaTutoriaSesion;
+
+	// Crear cita
+	@FXML private ComboBox<Alumno> cajaAlumnoCita;
+	@FXML private ComboBox<Tutoria> cajaTutoriaCita;
+	@FXML private ComboBox<Sesion> cajaSesionCita;
+	@FXML private ComboBox<LocalTime> cajaHoraCita;
+
+
+	// Filtrar
+	@FXML private TextField buscarAlumno;
+	@FXML private TextField buscarProfesor;
+	@FXML private TextField buscarTutoria;
+	@FXML private TextField buscarSesion;
+	@FXML private DatePicker filtrarSesionFecha;
+	@FXML private TextField filtrarTutoriaC;
+	@FXML private TextField filtrarAlumnoC;
+	@FXML private DatePicker filtrarFechaC;
+	@FXML private TextField filtrarPorDni;
+	@FXML private TextField filtrarPorCorreo;
 
 
 
 	// Botones y Paneles
-	@FXML
-	private ImageView botonVolverAlumnado, botonVolverProfesorado, botonVolverTutorias, botonVolverSesion, botonVolverCita;
-	@FXML
-	private Button botonSalir, botonAlumnado, botonProfesorado, botonTutorias, botonSesiones, botonCitas, botonAcercaDe,
-	botonAceptarAlumno, botonAceptarProfesor, botonCrearProfesor, botonCrearAlumno, botonCrearTutoria, botonAceptarTutoria, botonCrearSesion, botonAceptarSesion, botonAceptarCita, botonCrearCita;
-	@FXML
-	private BorderPane panelRaiz;
-	@FXML
-	private AnchorPane panelAlumnado;
-	@FXML
-	private AnchorPane panelCrearAlumno;
-	@FXML
-	private AnchorPane panelProfesorado;
-	@FXML
-	private AnchorPane panelCrearProfesor;
-	@FXML
-	private AnchorPane panelTutorias;
-	@FXML
-	private AnchorPane panelCrearTutoria;
-	@FXML
-	private AnchorPane panelSesiones;
-	@FXML
-	private AnchorPane panelCrearSesion;
+	@FXML private ImageView botonVolverAlumnado, botonVolverProfesorado, botonVolverTutorias, botonVolverSesion,
+	botonVolverCita;
+	@FXML private Button botonSalir, botonAlumnado, botonProfesorado, botonTutorias, botonSesiones, botonCitas, botonAcercaDe,
+	botonAceptarAlumno, botonAceptarProfesor, botonCrearProfesor, botonCrearAlumno, botonCrearTutoria,
+	botonAceptarTutoria, botonCrearSesion, botonAceptarSesion, botonAceptarCita, botonCrearCita;
+	@FXML private BorderPane panelRaiz;
+	@FXML private AnchorPane panelAlumnado;
+	@FXML private AnchorPane panelCrearAlumno;
+	@FXML private AnchorPane panelProfesorado;
+	@FXML private AnchorPane panelCrearProfesor;
+	@FXML private AnchorPane panelTutorias;
+	@FXML private AnchorPane panelCrearTutoria;
+	@FXML private AnchorPane panelSesiones;
+	@FXML private AnchorPane panelCrearSesion;
 	@FXML private AnchorPane panelCitas;
 	@FXML private AnchorPane panelCrearCita;
 	@FXML private AnchorPane panelAcercaDe;
-	
+
 
 	public void setControlador(IControlador controlador) {
 		this.controladorMVC = controlador;
-		
+
 	}
 
 	public void actualizaTablas() {
-		
+
 		actualizaAlumnos();
 		actualizaProfesores();
 		actualizaTutorias();
 		actualizaSesiones();
 		actualizaCitas();
-		
-		
+
 		tvAlumnado.setPlaceholder(new Label("No hay alumnos para mostrar."));
-		
-	
-	
+
 		tvProfesorado.setPlaceholder(new Label("No hay profesores para mostrar."));
-		
-	
+
 		tvTutorias.setPlaceholder(new Label("No hay tutorías para mostrar."));
-		
+
 		tvSesiones.setPlaceholder(new Label("No hay sesiones para mostrar."));
+
 		tvCitas.setPlaceholder(new Label("No hay citas para mostrar."));
-		
-		
-			
-			
-			
-			
-		
-		
+
 	}
 
 	private void filtrarTablas() {
@@ -278,7 +229,20 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 			});
 
 		});
-		
+
+		filtrarPorCorreo.textProperty().addListener((prop, old, text) -> {
+			alumnosFiltrados.setPredicate(alumno -> {
+				if (text == null || text.isEmpty())
+					return true;
+
+				String correo = alumno.getCorreo().toLowerCase();
+				return correo.contains(text.toLowerCase());
+			});
+
+		});
+
+		// filtrar profesores
+
 		buscarProfesor.textProperty().addListener((prop, old, text) -> {
 			profesoresFiltrados.setPredicate(profesor -> {
 				if (text == null || text.isEmpty())
@@ -289,7 +253,20 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 			});
 
 		});
-		
+
+		filtrarPorDni.textProperty().addListener((prop, old, text) -> {
+			profesoresFiltrados.setPredicate(profesor -> {
+				if (text == null || text.isEmpty())
+					return true;
+
+				String dni = profesor.getDni().toLowerCase();
+				return dni.contains(text.toLowerCase());
+			});
+
+		});
+
+		//filtrar tutorías
+
 		buscarTutoria.textProperty().addListener((prop, old, text) -> {
 			tutoriasFiltradas.setPredicate(tutoria -> {
 				if (text == null || text.isEmpty())
@@ -300,9 +277,9 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 			});
 
 		});
-		
-		
-		
+
+		//filtrar sesiones
+
 		buscarSesion.textProperty().addListener((prop, old, text) -> {
 			sesionesFiltradas.setPredicate(sesion -> {
 				if (text == null || text.isEmpty())
@@ -313,12 +290,10 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 			});
 
 		});
-		
-		
-		
+
 		filtrarSesionFecha.valueProperty().addListener((prop, old, text) -> {
 			sesionesFiltradas.setPredicate(sesion -> {
-				if (text == null )
+				if (text == null)
 					return true;
 
 				LocalDate fecha = sesion.getFecha();
@@ -326,10 +301,12 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 			});
 
 		});
-		
+
+		//filtrar citas
+
 		filtrarFechaC.valueProperty().addListener((prop, old, text) -> {
 			citasFiltradas.setPredicate(cita -> {
-				if (text == null )
+				if (text == null)
 					return true;
 
 				LocalDate fecha = cita.getSesion().getFecha();
@@ -337,7 +314,7 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 			});
 
 		});
-		
+
 		filtrarTutoriaC.textProperty().addListener((prop, old, text) -> {
 			citasFiltradas.setPredicate(cita -> {
 				if (text == null || text.isEmpty())
@@ -348,7 +325,7 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 			});
 
 		});
-		
+
 		filtrarAlumnoC.textProperty().addListener((prop, old, text) -> {
 			citasFiltradas.setPredicate(cita -> {
 				if (text == null || text.isEmpty())
@@ -359,55 +336,63 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 			});
 
 		});
-		
-		
-	
-		
-		
+
 	}
 
 	private void limpiaFormulario() {
+		//tf alumnos
 		tfNombreAlumno.setText("");
-
 		tfCorreo.setText("");
+		buscarAlumno.setText("");
+		filtrarPorCorreo.setText("");
+
+		//tf profesores
 		tfCorreoProfesor.setText("");
 		tfDni.setText("");
 		tfNombreProfesor.setText("");
+		buscarProfesor.setText("");
+		filtrarPorDni.setText("");
+
+		//tf tutorías
 		tfNombreTutoria.setText("");
 		cajaProfesorTutoria.valueProperty().set(null);
-		
-		
-	
+		buscarTutoria.setText("");
+
+		//tf sesiones
 		cajaTutoriaSesion.valueProperty().set(null);
-		
 		tfFecha.valueProperty().set(null);
 		tfHoraFin.setText("");
 		tfHoraInicio.setText("");
 		tfDuracion.setText("");
 		filtrarSesionFecha.valueProperty().set(null);
+		buscarSesion.setText("");
+
+		// tf citas
 		cajaAlumnoCita.valueProperty().set(null);
 		cajaTutoriaCita.valueProperty().set(null);
 		cajaSesionCita.valueProperty().set(null);
 		cajaHoraCita.valueProperty().set(null);
+		filtrarFechaC.valueProperty().set(null);
+		filtrarTutoriaC.setText("");
+		filtrarAlumnoC.setText("");
 
 	}
-
 
 	// Menú Principal
 
 	@FXML
 	private void irACrear(ActionEvent e) {
-		if(botonCrearAlumno==(Button)e.getSource())
+		if (botonCrearAlumno == (Button) e.getSource())
 			panelCrearAlumno.toFront();
-		if(botonCrearProfesor==(Button)e.getSource())
+		if (botonCrearProfesor == (Button) e.getSource())
 			panelCrearProfesor.toFront();
-		if(botonCrearTutoria==(Button)e.getSource())
+		if (botonCrearTutoria == (Button) e.getSource())
 			panelCrearTutoria.toFront();
-		if(botonCrearSesion==(Button)e.getSource())
+		if (botonCrearSesion == (Button) e.getSource())
 			panelCrearSesion.toFront();
-		if(botonCrearCita==(Button)e.getSource())
+		if (botonCrearCita == (Button) e.getSource())
 			panelCrearCita.toFront();
-		
+
 	}
 
 	@FXML
@@ -442,7 +427,6 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		if (botonPulsado == botonAlumnado) {
 			botonAlumnado.setId("botonPulsado");
 			cambiarEstilo(botonAlumnado);
-			
 			panelAlumnado.toFront();
 			limpiaFormulario();
 
@@ -451,7 +435,7 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		if (botonPulsado == botonProfesorado) {
 			botonProfesorado.setId("botonPulsado");
 			cambiarEstilo(botonProfesorado);
-			
+
 			panelProfesorado.toFront();
 			limpiaFormulario();
 		}
@@ -460,6 +444,7 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 			botonTutorias.setId("botonPulsado");
 			cambiarEstilo(botonTutorias);
 			tutorias.setAll(controladorMVC.getTutorias());
+			actualizaTutorias();
 			panelTutorias.toFront();
 			limpiaFormulario();
 		}
@@ -468,6 +453,7 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 			botonSesiones.setId("botonPulsado");
 			cambiarEstilo(botonSesiones);
 			sesiones.setAll(controladorMVC.getSesiones());
+			actualizaSesiones();
 			panelSesiones.toFront();
 			limpiaFormulario();
 		}
@@ -495,21 +481,21 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 			limpiaFormulario();
 			panelAlumnado.toFront();
 		}
-		
+
 		if (botonPulsado == botonVolverProfesorado) {
 			limpiaFormulario();
 			panelProfesorado.toFront();
 		}
-		
-		if(botonPulsado==botonVolverTutorias) {
+
+		if (botonPulsado == botonVolverTutorias) {
 			limpiaFormulario();
 			panelTutorias.toFront();
 		}
-		if(botonPulsado==botonVolverSesion) {
+		if (botonPulsado == botonVolverSesion) {
 			limpiaFormulario();
 			panelSesiones.toFront();
 		}
-		if(botonPulsado==botonVolverCita) {
+		if (botonPulsado == botonVolverCita) {
 			limpiaFormulario();
 			panelCitas.toFront();
 		}
@@ -524,17 +510,17 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		if (botonPulsado == botonAceptarAlumno) {
 			crearAlumno();
 		}
-		
-		if(botonPulsado == botonAceptarProfesor) {
+
+		if (botonPulsado == botonAceptarProfesor) {
 			crearProfesor();
 		}
-		if(botonPulsado == botonAceptarTutoria) {
+		if (botonPulsado == botonAceptarTutoria) {
 			crearTutoria();
 		}
-		if(botonPulsado==botonAceptarSesion) {
+		if (botonPulsado == botonAceptarSesion) {
 			crearSesion();
 		}
-		if(botonPulsado==botonAceptarCita) {
+		if (botonPulsado == botonAceptarCita) {
 			crearCita();
 		}
 	}
@@ -556,34 +542,18 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		tfCorreoProfesor.textProperty().addListener((ob, ov, nv) -> compruebaCampoTexto(ER_CORREO, tfCorreoProfesor));
 		tfNombreProfesor.textProperty().addListener((ob, ov, nv) -> compruebaCampoTexto(ER_NOMBRE, tfNombreProfesor));
 		tfDni.textProperty().addListener((ob, ov, nv) -> compruebaCampoTexto(ER_DNI, tfDni));
-		tfNombreTutoria.textProperty().addListener((ob,ov,nv) -> compruebaCampoTexto(ER_OBLIGATORIO, tfNombreTutoria));
-		
-	}
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-
-		
-		iniciarTablaAlumnos();
-		iniciarTablaProfesores();
-		iniciarTablaTutorias();
-		iniciarTablaSesiones();
-		iniciarTablaCitas();
-		
-		observarTextFields();
-		filtrarTablas();
-	
-		
-		
+		tfNombreTutoria.textProperty()
+		.addListener((ob, ov, nv) -> compruebaCampoTexto(ER_OBLIGATORIO, tfNombreTutoria));
 
 	}
 
 	// Alumnos
 
 	private void actualizaAlumnos() {
-		
+
 		alumnos.setAll(controladorMVC.getAlumnos());
 	}
+
 	private void iniciarTablaAlumnos() {
 		tcNombre.setCellValueFactory(alumno -> new SimpleStringProperty(alumno.getValue().getNombre()));
 		tcCorreo.setCellValueFactory(alumno -> new SimpleStringProperty(alumno.getValue().getCorreo()));
@@ -595,7 +565,6 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 
 	}
 
-	
 	private void crearAlumno() {
 		Alumno alumno = null;
 		try {
@@ -610,7 +579,6 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		}
 	}
 
-
 	@FXML
 	private void borrarAlumno() throws OperationNotSupportedException {
 		Alumno alumno = (Alumno) tvAlumnado.getSelectionModel().getSelectedItem();
@@ -620,11 +588,11 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 			String nombre = alumno.getNombre();
 			if (Dialogos.mostrarDialogoConfirmacion("",
 					"¿Estás seguro de que quieres eliminar al alumno " + nombre + "?", null)) {
-				
+
 				controladorMVC.borrar(alumno);
 				actualizaAlumnos();
 				Dialogos.mostrarDialogoAdvertencia("", "Alumno borrado satisfactoriamente");
-				
+
 			}
 		}
 	}
@@ -661,8 +629,6 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 
 		}
 	}
-	
-	
 
 	private Alumno getAlumno() {
 		Alumno alumno = null;
@@ -676,14 +642,13 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		return alumno;
 	}
 
-
 	// Profesorado
-	
+
 	@FXML
 	private void actualizaProfesores() {
 		profesores.setAll(controladorMVC.getProfesores());
 	}
-	
+
 	private void iniciarTablaProfesores() {
 		tcNombreP.setCellValueFactory(profesor -> new SimpleStringProperty(profesor.getValue().getNombre()));
 		tcCorreoP.setCellValueFactory(profesor -> new SimpleStringProperty(profesor.getValue().getCorreo()));
@@ -695,7 +660,6 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 
 	}
 
-	
 	private void crearProfesor() {
 		Profesor profesor = null;
 		try {
@@ -710,7 +674,6 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		}
 	}
 
-
 	@FXML
 	private void borrarProfesor() throws OperationNotSupportedException {
 		Profesor profesor = (Profesor) tvProfesorado.getSelectionModel().getSelectedItem();
@@ -723,7 +686,7 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 				controladorMVC.borrar(profesor);
 				actualizaProfesores();
 				Dialogos.mostrarDialogoAdvertencia("", "Profesor borrado satisfactoriamente");
-				
+
 			}
 		}
 	}
@@ -760,9 +723,6 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 
 		}
 	}
-	
-
-
 
 	private Profesor getProfesor() {
 		Profesor profesor = null;
@@ -777,53 +737,41 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		return profesor;
 	}
 
-	
-
-	
-	
 	// Tutorías
-	
 
 	@FXML
 	private void actualizaTutorias() {
 		tutorias.setAll(controladorMVC.getTutorias());
 		cajaProfesorTutoria.getItems().clear();
 		cajaProfesorTutoria.getItems().addAll(profesores);
-		
-		
-		
-		
-		
-		
+
 	}
 
 	@FXML
-	
+
 	private void iniciarTablaTutorias() {
 		tcNombreTutoria.setCellValueFactory(tutoria -> new SimpleStringProperty(tutoria.getValue().getNombre()));
-		tcProfesorT.setCellValueFactory(tutoria -> new SimpleStringProperty(tutoria.getValue().getProfesor().getNombre()));
-		
+		tcProfesorT
+		.setCellValueFactory(tutoria -> new SimpleStringProperty(tutoria.getValue().getProfesor().getNombre()));
 
 		SortedList<Tutoria> tutoriasOrdenadas = new SortedList<>(tutoriasFiltradas);
 		tutoriasOrdenadas.comparatorProperty().bind(tvTutorias.comparatorProperty());
 		tvTutorias.setItems(tutoriasOrdenadas);
 		Callback<ListView<Profesor>, ListCell<Profesor>> factory = lv -> new ListCell<Profesor>() {
 
-		    @Override
-		    protected void updateItem(Profesor profesor, boolean empty) {
-		        super.updateItem(profesor, empty);
-		        setText(empty ? "" : profesor.getNombre());
-		    }
+			@Override
+			protected void updateItem(Profesor profesor, boolean empty) {
+				super.updateItem(profesor, empty);
+				setText(empty ? "" : profesor.getNombre());
+			}
 
 		};
 
 		cajaProfesorTutoria.setCellFactory(factory);
 		cajaProfesorTutoria.setButtonCell(factory.call(null));
-		
 
 	}
 
-	
 	private void crearTutoria() {
 		Tutoria tutoria = null;
 		try {
@@ -838,7 +786,6 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		}
 	}
 
-
 	@FXML
 	private void borrarTutoria() throws OperationNotSupportedException {
 		Tutoria tutoria = (Tutoria) tvTutorias.getSelectionModel().getSelectedItem();
@@ -851,7 +798,7 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 				controladorMVC.borrar(tutoria);
 				actualizaTutorias();
 				Dialogos.mostrarDialogoAdvertencia("", "Tutoría borrada satisfactoriamente.");
-				
+
 			}
 		}
 	}
@@ -907,46 +854,42 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		return tutoria;
 	}
 
-	
-
 	// Sesiones
-	
-	
+
 	@FXML
 	private void actualizaSesiones() {
 		sesiones.setAll(controladorMVC.getSesiones());
 		cajaTutoriaSesion.getItems().clear();
 		cajaTutoriaSesion.getItems().addAll(tutorias);
-		
-		
-		
-		
-		
-	
-		
-		
+
 	}
 
 	@FXML
-	
+
 	private void iniciarTablaSesiones() {
-		tcNombreTutoriaS.setCellValueFactory(sesion -> new SimpleStringProperty(sesion.getValue().getTutoria().getNombre()));
-		tcProfesorS.setCellValueFactory(sesion -> new SimpleStringProperty(sesion.getValue().getTutoria().getProfesor().getNombre()));
-		tcFecha.setCellValueFactory(sesion -> new SimpleStringProperty(FORMATO_FECHA.format(sesion.getValue().getFecha())));
-		tcHora.setCellValueFactory(sesion -> new SimpleStringProperty(FORMATO_HORA.format(sesion.getValue().getHoraInicio()).concat(" - ").concat(FORMATO_HORA.format(sesion.getValue().getHoraFin()))));
-		tcDuracion.setCellValueFactory(sesion -> new SimpleIntegerProperty(sesion.getValue().getMinutosDuracion()).asObject());
+		tcNombreTutoriaS
+		.setCellValueFactory(sesion -> new SimpleStringProperty(sesion.getValue().getTutoria().getNombre()));
+		tcProfesorS.setCellValueFactory(
+				sesion -> new SimpleStringProperty(sesion.getValue().getTutoria().getProfesor().getNombre()));
+		tcFecha.setCellValueFactory(
+				sesion -> new SimpleStringProperty(FORMATO_FECHA.format(sesion.getValue().getFecha())));
+		tcHora.setCellValueFactory(
+				sesion -> new SimpleStringProperty(FORMATO_HORA.format(sesion.getValue().getHoraInicio()).concat(" - ")
+						.concat(FORMATO_HORA.format(sesion.getValue().getHoraFin()))));
+		tcDuracion.setCellValueFactory(
+				sesion -> new SimpleIntegerProperty(sesion.getValue().getMinutosDuracion()).asObject());
 
 		SortedList<Sesion> sesionesOrdenadas = new SortedList<>(sesionesFiltradas);
 		sesionesOrdenadas.comparatorProperty().bind(tvSesiones.comparatorProperty());
 		tvSesiones.setItems(sesionesOrdenadas);
-		
+
 		Callback<ListView<Tutoria>, ListCell<Tutoria>> factory = lv -> new ListCell<Tutoria>() {
 
-		    @Override
-		    protected void updateItem(Tutoria tutoria, boolean empty) {
-		        super.updateItem(tutoria, empty);
-		        setText(empty ? "" : tutoria.getNombre().concat(" - ").concat(tutoria.getProfesor().getNombre()));
-		    }
+			@Override
+			protected void updateItem(Tutoria tutoria, boolean empty) {
+				super.updateItem(tutoria, empty);
+				setText(empty ? "" : tutoria.getNombre().concat(" - ").concat(tutoria.getProfesor().getNombre()));
+			}
 
 		};
 
@@ -955,8 +898,6 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 
 	}
 
-
-	
 	private void crearSesion() {
 		Sesion sesion = null;
 		try {
@@ -971,20 +912,18 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		}
 	}
 
-
 	@FXML
 	private void borrarSesion() throws OperationNotSupportedException {
 		Sesion sesion = (Sesion) tvSesiones.getSelectionModel().getSelectedItem();
 		if (sesion == null) {
 			Dialogos.mostrarDialogoAdvertencia("", "Debes seleccionar una sesión de la tabla.");
 		} else {
-			
-			if (Dialogos.mostrarDialogoConfirmacion("",
-					"¿Estás seguro de que quieres eliminar esta sesión?", null)) {
+
+			if (Dialogos.mostrarDialogoConfirmacion("", "¿Estás seguro de que quieres eliminar esta sesión?", null)) {
 				controladorMVC.borrar(sesion);
 				actualizaSesiones();
 				Dialogos.mostrarDialogoAdvertencia("", "Sesión borrada satisfactoriamente.");
-				
+
 			}
 		}
 	}
@@ -996,7 +935,7 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		if (sesion == null) {
 			Dialogos.mostrarDialogoAdvertencia("", "Debes seleccionar una sesión de la tabla.");
 		} else {
-			
+
 			GridPane panelVerSesion = new GridPane();
 			panelVerSesion.getStyleClass().add("gridPaneAlert");
 			TextField tutoria = new TextField();
@@ -1018,7 +957,8 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 			dniP.setText(sesion.getTutoria().getProfesor().getDni());
 			correoP.setText(sesion.getTutoria().getProfesor().getCorreo());
 			fecha.setText(FORMATO_FECHA.format(sesion.getFecha()));
-			hora.setText(FORMATO_HORA.format(sesion.getHoraInicio()).concat(" - ").concat(FORMATO_HORA.format(sesion.getHoraFin())));
+			hora.setText(FORMATO_HORA.format(sesion.getHoraInicio()).concat(" - ")
+					.concat(FORMATO_HORA.format(sesion.getHoraFin())));
 			duracion.setText(String.valueOf(sesion.getMinutosDuracion()).concat(" minutos"));
 			tutoria.getStyleClass().addAll("textoPlano", "textoVer");
 			nombreP.getStyleClass().addAll("textoPlano", "textoVer");
@@ -1051,26 +991,21 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		Sesion sesion = null;
 		try {
 			Tutoria tutoria = cajaTutoriaSesion.getSelectionModel().getSelectedItem();
-			
+
 			LocalDate fecha = tfFecha.getValue();
 			LocalTime horaI = LocalTime.parse(tfHoraInicio.getText(), FORMATO_HORA);
 			LocalTime horaF = LocalTime.parse(tfHoraFin.getText(), FORMATO_HORA);
 			int duracion = Integer.parseInt(tfDuracion.getText());
-			
-			sesion = new Sesion(tutoria,fecha,horaI,horaF,duracion);
+
+			sesion = new Sesion(tutoria, fecha, horaI, horaF, duracion);
 		} catch (NumberFormatException e) {
 			Dialogos.mostrarDialogoError("", e.getMessage());
 		}
 		return sesion;
 	}
 
-	
-
 	// Citas
-	
-	
-	
-	
+
 	@FXML
 	private void actualizaCitas() {
 		citas.setAll(controladorMVC.getCitas());
@@ -1078,55 +1013,48 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 		cajaAlumnoCita.getItems().addAll(alumnos);
 		cajaTutoriaCita.getItems().clear();
 		cajaTutoriaCita.getItems().addAll(tutorias);
-		
-		
-		
-		
-		
-		
-	
-		
-		
+
 	}
-	
+
 	@FXML
 	private void rellenar() {
-	 Tutoria tutoria = cajaTutoriaCita.getSelectionModel().getSelectedItem();
-	 cajaSesionCita.getItems().clear();
-		if(tutoria==null) {
+		Tutoria tutoria = cajaTutoriaCita.getSelectionModel().getSelectedItem();
+		cajaSesionCita.getItems().clear();
+		if (tutoria == null) {
 			cajaSesionCita.valueProperty().set(null);
 		} else {
-			cajaSesionCita.getItems().addAll(controladorMVC.getSesiones(cajaTutoriaCita.getSelectionModel().getSelectedItem()));
+			cajaSesionCita.getItems()
+			.addAll(controladorMVC.getSesiones(cajaTutoriaCita.getSelectionModel().getSelectedItem()));
 		}
 	}
-	
+
 	@FXML
 	private void horasDisponibles() {
 		Sesion sesion = cajaSesionCita.getSelectionModel().getSelectedItem();
 		cajaHoraCita.getItems().clear();
 		LocalTime horaAux;
-		if(sesion==null) {
+		if (sesion == null) {
 			cajaHoraCita.valueProperty().set(null);
 		} else {
 			List<LocalTime> horasDisponibles = new ArrayList<>();
 			List<Cita> citasPorSesion = new ArrayList<>();
 			citasPorSesion.addAll(controladorMVC.getCitas(sesion));
 			List<LocalTime> horasReservadas = new ArrayList<>();
-			for(Cita cita: citasPorSesion) {
+			for (Cita cita : citasPorSesion) {
 				horasReservadas.add(cita.getHora());
 			}
 			horaAux = sesion.getHoraInicio();
-			
-				do {
-					
-					horasDisponibles.add(horaAux);
-					
-					horaAux = horaAux.plusMinutes(sesion.getMinutosDuracion());
-				}while(horaAux.isBefore(sesion.getHoraFin()));
-			
-	horasDisponibles.removeAll(horasReservadas);
-	cajaHoraCita.getItems().addAll(horasDisponibles);
-			
+
+			do {
+
+				horasDisponibles.add(horaAux);
+
+				horaAux = horaAux.plusMinutes(sesion.getMinutosDuracion());
+			} while (horaAux.isBefore(sesion.getHoraFin()));
+
+			horasDisponibles.removeAll(horasReservadas);
+			cajaHoraCita.getItems().addAll(horasDisponibles);
+
 		}
 	}
 
@@ -1134,50 +1062,57 @@ private ComboBox<Tutoria> cajaTutoriaSesion;
 	private void limpiaSesion() {
 		cajaSesionCita.valueProperty().set(null);
 	}
+
 	@FXML
-	
+
 	private void iniciarTablaCitas() {
-		tcNombreTutoriaC.setCellValueFactory(cita -> new SimpleStringProperty(cita.getValue().getSesion().getTutoria().getNombre()));
-		tcSesionC.setCellValueFactory(cita -> new SimpleStringProperty(FORMATO_FECHA.format(cita.getValue().getSesion().getFecha()).concat(" ").concat(FORMATO_HORA.format(cita.getValue().getSesion().getHoraInicio()).concat(" - ").concat(FORMATO_HORA.format(cita.getValue().getSesion().getHoraFin())))));
+		tcNombreTutoriaC.setCellValueFactory(
+				cita -> new SimpleStringProperty(cita.getValue().getSesion().getTutoria().getNombre()));
+		tcSesionC.setCellValueFactory(
+				cita -> new SimpleStringProperty(FORMATO_FECHA.format(cita.getValue().getSesion().getFecha())
+						.concat(" ").concat(FORMATO_HORA.format(cita.getValue().getSesion().getHoraInicio())
+								.concat(" - ").concat(FORMATO_HORA.format(cita.getValue().getSesion().getHoraFin())))));
 		tcHoraC.setCellValueFactory(cita -> new SimpleStringProperty(FORMATO_HORA.format(cita.getValue().getHora())));
 		tcAlumnoC.setCellValueFactory(cita -> new SimpleStringProperty(cita.getValue().getAlumno().getNombre()));
-		
 
 		SortedList<Cita> citasOrdenadas = new SortedList<>(citasFiltradas);
 		citasOrdenadas.comparatorProperty().bind(tvCitas.comparatorProperty());
 		tvCitas.setItems(citasOrdenadas);
-		
+
 		Callback<ListView<Tutoria>, ListCell<Tutoria>> factory = lv -> new ListCell<Tutoria>() {
 
-		    @Override
-		    protected void updateItem(Tutoria tutoria, boolean empty) {
-		        super.updateItem(tutoria, empty);
-		        setText(empty ? "" : tutoria.getNombre().concat(" - ").concat(tutoria.getProfesor().getNombre()));
-		    }
+			@Override
+			protected void updateItem(Tutoria tutoria, boolean empty) {
+				super.updateItem(tutoria, empty);
+				setText(empty ? "" : tutoria.getNombre().concat(" - ").concat(tutoria.getProfesor().getNombre()));
+			}
 
 		};
-		
+
 		Callback<ListView<Sesion>, ListCell<Sesion>> factoryS = lv -> new ListCell<Sesion>() {
 
-		    @Override
-		    protected void updateItem(Sesion sesion, boolean empty) {
-		        super.updateItem(sesion, empty);
-		        setText(empty ? "" : FORMATO_FECHA.format(sesion.getFecha()).concat("  ").concat(FORMATO_HORA.format(sesion.getHoraInicio()).concat(" - ").concat(FORMATO_HORA.format(sesion.getHoraFin()))));
-		    }
+			@Override
+			protected void updateItem(Sesion sesion, boolean empty) {
+				super.updateItem(sesion, empty);
+				setText(empty ? ""
+						: FORMATO_FECHA.format(sesion.getFecha()).concat("  ")
+						.concat(FORMATO_HORA.format(sesion.getHoraInicio()).concat(" - ")
+								.concat(FORMATO_HORA.format(sesion.getHoraFin()))));
+			}
 
 		};
-		
+
 		Callback<ListView<Alumno>, ListCell<Alumno>> factoryA = lv -> new ListCell<Alumno>() {
 
-		    @Override
-		    protected void updateItem(Alumno alumno, boolean empty) {
-		        super.updateItem(alumno, empty);
-		        setText(empty ? "" : alumno.getNombre().concat(" - ").concat(alumno.getCorreo()));
-		    }
+			@Override
+			protected void updateItem(Alumno alumno, boolean empty) {
+				super.updateItem(alumno, empty);
+				setText(empty ? "" : alumno.getNombre().concat(" - ").concat(alumno.getCorreo()));
+			}
 
 		};
-cajaTutoriaCita.setCellFactory(factory);
-cajaTutoriaCita.setButtonCell(factory.call(null));
+		cajaTutoriaCita.setCellFactory(factory);
+		cajaTutoriaCita.setButtonCell(factory.call(null));
 		cajaSesionCita.setCellFactory(factoryS);
 		cajaSesionCita.setButtonCell(factoryS.call(null));
 		cajaAlumnoCita.setCellFactory(factoryA);
@@ -1185,9 +1120,6 @@ cajaTutoriaCita.setButtonCell(factory.call(null));
 
 	}
 
-	
-	
-	
 	private void crearCita() {
 		Cita cita = null;
 		try {
@@ -1202,20 +1134,18 @@ cajaTutoriaCita.setButtonCell(factory.call(null));
 		}
 	}
 
-
 	@FXML
 	private void borrarCita() throws OperationNotSupportedException {
-		Cita cita =  tvCitas.getSelectionModel().getSelectedItem();
+		Cita cita = tvCitas.getSelectionModel().getSelectedItem();
 		if (cita == null) {
 			Dialogos.mostrarDialogoAdvertencia("", "Debes seleccionar una cita de la tabla.");
 		} else {
-			
-			if (Dialogos.mostrarDialogoConfirmacion("",
-					"¿Estás seguro de que quieres eliminar esta cita?", null)) {
+
+			if (Dialogos.mostrarDialogoConfirmacion("", "¿Estás seguro de que quieres eliminar esta cita?", null)) {
 				controladorMVC.borrar(cita);
 				actualizaCitas();
 				Dialogos.mostrarDialogoAdvertencia("", "Cita borrada satisfactoriamente.");
-				
+
 			}
 		}
 	}
@@ -1227,9 +1157,19 @@ cajaTutoriaCita.setButtonCell(factory.call(null));
 		if (cita == null) {
 			Dialogos.mostrarDialogoAdvertencia("", "Debes seleccionar una cita de la tabla.");
 		} else {
-			
-			GridPane panelVerCita = new GridPane();
-			panelVerCita.getStyleClass().add("gridPaneAlert");
+
+			HBox panelTotal = new HBox();
+			panelTotal.getStyleClass().add("panelVer");
+			VBox panel = new VBox();
+			VBox panelDos = new VBox();
+			panel.getStyleClass().add("vBoxCita");
+			panelDos.getStyleClass().add("vBoxCita");
+			GridPane panelVerSesion = new GridPane();
+			panelVerSesion.getStyleClass().add("gridPaneAlert");
+			GridPane panelVerSesionDos = new GridPane();
+			panelVerSesionDos.getStyleClass().add("gridPaneAlert");
+			GridPane panelVerSesionTres = new GridPane();
+			panelVerSesionTres.getStyleClass().add("gridPaneAlert");
 			TextField tutoria = new TextField();
 			TextField nombreP = new TextField();
 			TextField dniP = new TextField();
@@ -1237,6 +1177,10 @@ cajaTutoriaCita.setButtonCell(factory.call(null));
 			TextField fecha = new TextField();
 			TextField hora = new TextField();
 			TextField duracion = new TextField();
+			TextField citaH = new TextField();
+			TextField alumnoN = new TextField();
+			TextField alumnoC = new TextField();
+			TextField alumnoE = new TextField();
 			tutoria.setEditable(false);
 			nombreP.setEditable(false);
 			dniP.setEditable(false);
@@ -1244,13 +1188,22 @@ cajaTutoriaCita.setButtonCell(factory.call(null));
 			fecha.setEditable(false);
 			hora.setEditable(false);
 			duracion.setEditable(false);
+			citaH.setEditable(false);
+			alumnoN.setEditable(false);
+			alumnoC.setEditable(false);
+			alumnoE.setEditable(false);
 			tutoria.setText(cita.getSesion().getTutoria().getNombre());
 			nombreP.setText(cita.getSesion().getTutoria().getProfesor().getNombre());
 			dniP.setText(cita.getSesion().getTutoria().getProfesor().getDni());
 			correoP.setText(cita.getSesion().getTutoria().getProfesor().getCorreo());
 			fecha.setText(FORMATO_FECHA.format(cita.getSesion().getFecha()));
-			hora.setText(FORMATO_HORA.format(cita.getSesion().getHoraInicio()).concat(" - ").concat(FORMATO_HORA.format(cita.getSesion().getHoraFin())));
+			hora.setText(FORMATO_HORA.format(cita.getSesion().getHoraInicio()).concat(" - ")
+					.concat(FORMATO_HORA.format(cita.getSesion().getHoraFin())));
 			duracion.setText(String.valueOf(cita.getSesion().getMinutosDuracion()).concat(" minutos"));
+			citaH.setText(FORMATO_HORA.format(cita.getHora()));
+			alumnoN.setText(cita.getAlumno().getNombre());
+			alumnoC.setText(cita.getAlumno().getCorreo());
+			alumnoE.setText(cita.getAlumno().getExpediente());
 			tutoria.getStyleClass().addAll("textoPlano", "textoVer");
 			nombreP.getStyleClass().addAll("textoPlano", "textoVer");
 			correoP.getStyleClass().addAll("textoPlano", "textoVer");
@@ -1258,22 +1211,40 @@ cajaTutoriaCita.setButtonCell(factory.call(null));
 			fecha.getStyleClass().addAll("textoPlano", "textoVer");
 			hora.getStyleClass().addAll("textoPlano", "textoVer");
 			duracion.getStyleClass().addAll("textoPlano", "textoVer");
-			panelVerCita.add(new Text("Tutoría:"), 1, 0);
-			panelVerCita.add(tutoria, 2, 0);
-			panelVerCita.add(new Text("Profesor:"), 1, 1);
-			panelVerCita.add(nombreP, 2, 1);
-			panelVerCita.add(new Text("DNI:"), 1, 2);
-			panelVerCita.add(dniP, 2, 2);
-			panelVerCita.add(new Text("Correo:"), 1, 3);
-			panelVerCita.add(correoP, 2, 3);
-			panelVerCita.add(new Text("Fecha:"), 1, 4);
-			panelVerCita.add(fecha, 2, 4);
-			panelVerCita.add(new Text("Hora:"), 1, 5);
-			panelVerCita.add(hora, 2, 5);
-			panelVerCita.add(new Text("Duración:"), 1, 6);
-			panelVerCita.add(duracion, 2, 6);
+			citaH.getStyleClass().addAll("textoPlano", "textoVer");
+			alumnoN.getStyleClass().addAll("textoPlano", "textoVer");
+			alumnoC.getStyleClass().addAll("textoPlano", "textoVer");
+			alumnoE.getStyleClass().addAll("textoPlano", "textoVer");
+			panelVerSesion.add(new Text("Tutoría:"), 1, 0);
+			panelVerSesion.add(tutoria, 2, 0);
+			panelVerSesion.add(new Text("Profesor:"), 1, 1);
+			panelVerSesion.add(nombreP, 2, 1);
+			panelVerSesion.add(new Text("DNI:"), 1, 2);
+			panelVerSesion.add(dniP, 2, 2);
+			panelVerSesion.add(new Text("Correo:"), 1, 3);
+			panelVerSesion.add(correoP, 2, 3);
 
-			Dialogos.mostrarDialogoInformacionPersonalizado("", panelVerCita);
+			panelVerSesionDos.add(new Text("Nombre:"), 1, 0);
+			panelVerSesionDos.add(alumnoN, 2, 0);
+			panelVerSesionDos.add(new Text("Correo:"), 1, 1);
+			panelVerSesionDos.add(alumnoC, 2, 1);
+			panelVerSesionDos.add(new Text("Expediente:"), 1, 2);
+			panelVerSesionDos.add(alumnoE, 2, 2);
+
+			panelVerSesionTres.add(new Text("Fecha:"), 1, 0);
+			panelVerSesionTres.add(fecha, 2, 0);
+			panelVerSesionTres.add(new Text("Hora:"), 1, 1);
+			panelVerSesionTres.add(hora, 2, 1);
+			panelVerSesionTres.add(new Text("Duración:"), 1, 2);
+			panelVerSesionTres.add(duracion, 2, 2);
+			panelVerSesionTres.add(new Text("Hora de la cita:"), 1, 3);
+			panelVerSesionTres.add(citaH, 2, 3);
+
+			panelTotal.getChildren().addAll(panel, panelDos);
+			panel.getChildren().addAll(new Label("Tutoría"),panelVerSesion,new Label("Alumno"),panelVerSesionDos);
+			panelDos.getChildren().addAll(new Label("Cita"),panelVerSesionTres);
+
+			Dialogos.mostrarDialogoInformacionCita("", panelTotal);
 
 		}
 	}
@@ -1282,12 +1253,8 @@ cajaTutoriaCita.setButtonCell(factory.call(null));
 		Cita cita = null;
 		try {
 			Sesion sesion = cajaSesionCita.getSelectionModel().getSelectedItem();
-			
 			Alumno alumno = cajaAlumnoCita.getSelectionModel().getSelectedItem();
 			LocalTime hora = cajaHoraCita.getSelectionModel().getSelectedItem();
-			
-			
-			
 			cita = new Cita(alumno, sesion, hora);
 		} catch (NumberFormatException e) {
 			Dialogos.mostrarDialogoError("", e.getMessage());
@@ -1295,5 +1262,18 @@ cajaTutoriaCita.setButtonCell(factory.call(null));
 		return cita;
 	}
 
-	
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+
+		iniciarTablaAlumnos();
+		iniciarTablaProfesores();
+		iniciarTablaTutorias();
+		iniciarTablaSesiones();
+		iniciarTablaCitas();
+		observarTextFields();
+		filtrarTablas();
+
+	}
+
 }

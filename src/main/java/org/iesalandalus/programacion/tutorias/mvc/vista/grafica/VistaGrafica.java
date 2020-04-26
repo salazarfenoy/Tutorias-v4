@@ -17,36 +17,36 @@ import javafx.stage.WindowEvent;
 
 public class VistaGrafica extends Application implements IVista {
 
-	
+
 	double x, y;
 	private static IControlador controladorMVC = null;
-	
-	
-	
+
+
+
 
 	private void addDragListeners(final Node n, Stage primaryStage){
 
-	    n.setOnMousePressed((MouseEvent mouseEvent) -> {
-	        this.x = n.getScene().getWindow().getX() - mouseEvent.getScreenX();
-	        this.y = n.getScene().getWindow().getY() - mouseEvent.getScreenY();
-	    });
+		n.setOnMousePressed((MouseEvent mouseEvent) -> {
+			this.x = n.getScene().getWindow().getX() - mouseEvent.getScreenX();
+			this.y = n.getScene().getWindow().getY() - mouseEvent.getScreenY();
+		});
 
-	    n.setOnMouseDragged((MouseEvent mouseEvent) -> {
-	        primaryStage.setX(mouseEvent.getScreenX() + this.x);
-	        primaryStage.setY(mouseEvent.getScreenY() + this.y);
-	    });
+		n.setOnMouseDragged((MouseEvent mouseEvent) -> {
+			primaryStage.setX(mouseEvent.getScreenX() + this.x);
+			primaryStage.setY(mouseEvent.getScreenY() + this.y);
+		});
 	}
-	
-	
+
+
 
 	@Override
 	public void start(Stage escenarioPrincipal) {
 		try {
-			
+
 			FXMLLoader cargadorPrincipal = new FXMLLoader(getClass().getResource("../vistas/VentanaPrincipal.fxml"));
 			BorderPane raiz = cargadorPrincipal.load();	
-			
-		
+
+
 			ControladorPrincipal cPrincipal = cargadorPrincipal.getController();
 			cPrincipal.setControlador(controladorMVC);
 			cPrincipal.actualizaTablas();
@@ -60,38 +60,38 @@ public class VistaGrafica extends Application implements IVista {
 			e.printStackTrace();
 		}
 	}
-	
+
 
 	private void confirmarSalida(Stage escenarioPrincipal, WindowEvent e) {
 		if (Dialogos.mostrarDialogoConfirmacion("Salir", "¿Estás seguro de que quieres salir?", null)) {
 			controladorMVC.terminar();
 			escenarioPrincipal.close();
-		
-		
-                } else {
-	        e.consume();
-                   }
-		
+
+
+		} else {
+			e.consume();
+		}
+
 	}
 	@Override
 	public void setControlador(IControlador controlador) {
 		controladorMVC = controlador;
-		
+
 	}
 
 
 	@Override
 	public void comenzar() {
 		launch(this.getClass());
-		
+
 	}
 
 	@Override
 	public void terminar() {
-		
+
 		controladorMVC.terminar();
 	}
 
 
-	
+
 }
